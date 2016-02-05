@@ -5,8 +5,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * This class contains the tests for core.Rational.
@@ -58,8 +57,14 @@ public class RationalTest {
     }
 
     @Test
-    public void testCompareTo() throws Exception {
-
+    public void compareToShouldWork() throws Exception {
+        Rational rational1 = new Rational(1, 3);
+        Rational rational2 = new Rational(1, 4);
+        Rational rational3 = new Rational(1, 2);
+        Rational rational4 = new Rational(2, 4);
+        assertTrue(rational1.compareTo(rational2) > 0);
+        assertTrue(rational3.compareTo(rational1) > 0);
+        assertTrue(rational3.compareTo(rational4) == 0);
     }
 
     @Test

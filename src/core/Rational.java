@@ -231,30 +231,62 @@ public class Rational extends Number implements Comparable<Rational> {
      * Methods of java.lang.Number
      */
 
+    /**
+     * Returns the value of this Rational as an int.
+     *
+     * @return The value of this Rational as an int.
+     */
     @Override
     public int intValue() {
         return num.divide(den).intValue();
     }
 
+    /**
+     * Returns the value of this Rational as a long.
+     *
+     * @return The value of this Rational as a long.
+     */
     @Override
     public long longValue() {
         return num.divide(den).longValue();
     }
 
+    /**
+     * Returns the value of this Rational as a float.
+     *
+     * @return The value of this Rational as a float.
+     */
     @Override
     public float floatValue() {
-        return toBigDecimal(MathContext.DECIMAL32).floatValue();
+        return toBigDecimal(MathContext.DECIMAL128).floatValue();
     }
 
+    /**
+     * Returns the value of this Rational as a double.
+     *
+     * @return The value of this Rational as a double.
+     */
     @Override
     public double doubleValue() {
-        return toBigDecimal(MathContext.DECIMAL32).doubleValue();
+        return toBigDecimal(MathContext.DECIMAL128).doubleValue();
     }
 
+    /**
+     * Approximates this Rational as a BigInteger.
+     *
+     * @return This Rational as a BigInteger.
+     */
     public BigInteger toBigInteger() {
         return num.divide(den);
     }
 
+    /**
+     * Approximates this Rational as a BigDecimal with respect to a certain
+     * context to limit the accuracy.
+     *
+     * @param context The context according to which rounding shall take place.
+     * @return This Rational as a BigDecimal.
+     */
     public BigDecimal toBigDecimal(MathContext context) {
         BigDecimal n = new BigDecimal(num);
         BigDecimal d = new BigDecimal(den);
