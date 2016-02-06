@@ -62,6 +62,15 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     /**
+     * Creates a new Rational object with the given BigInteger as the numerator.
+     *
+     * @param integer The desired numerator.
+     */
+    public Rational(BigInteger integer) {
+        this(integer, BigInteger.ONE);
+    }
+
+    /**
      * Creates a new Rational with the given (long) numerator and denominator,
      * reduced to its lowest terms.
      *
@@ -73,6 +82,15 @@ public class Rational extends Number implements Comparable<Rational> {
     public Rational(long numerator, long denominator)
             throws ArithmeticException {
         this(BigInteger.valueOf(numerator), BigInteger.valueOf(denominator));
+    }
+
+    /**
+     * Creates a new Rational object with the given long as the numerator.
+     *
+     * @param integer The desired numerator.
+     */
+    public Rational(long integer) {
+        this(BigInteger.valueOf(integer), BigInteger.ONE);
     }
 
     /**
@@ -163,8 +181,9 @@ public class Rational extends Number implements Comparable<Rational> {
      * and its inverse gives 0, the multiplicative identity).
      *
      * @return The multiplicative inverse (reciprocal) of this Rational.
+     * @throws ArithmeticException If the value of this Rational is zero.
      */
-    public Rational reciprocate() {
+    public Rational reciprocate() throws ArithmeticException {
         return new Rational(den, num);
     }
 
@@ -177,8 +196,7 @@ public class Rational extends Number implements Comparable<Rational> {
     public Rational add(Rational term) {
         BigInteger part1 = this.num.multiply(term.den);
         BigInteger part2 = term.num.multiply(this.den);
-        BigInteger num = part1.add(part2);
-        return new Rational(num, this.den.multiply(term.den));
+        return new Rational(part1.add(part2), this.den.multiply(term.den));
     }
 
     /**

@@ -99,22 +99,32 @@ public class RationalTest {
     }
 
     @Test
-    public void testIntValue() throws Exception {
-
-    }
-
-    @Test
-    public void testDoubleValue() throws Exception {
-
-    }
-
-    @Test
     public void testToBigInteger() throws Exception {
-
+        int n = 10, k = 5;
+        Rational result = Rational.ONE;
+        for (int i = 1; i <= k; i++) {
+            result = result.multiply(new Rational(
+                    n - i + 1,
+                    i
+            ));
+        }
+        assertEquals(
+                BigInteger.valueOf(252),
+                result.toBigInteger()
+        );
     }
 
     @Test
-    public void testToBigDecimal() throws Exception {
-
+    public void testDecimalConversion() throws Exception {
+        BigInteger denom = BigInteger.ONE;
+        Rational result = Rational.ONE;
+        for (int i = 2; i <= 20; i++) {
+            result = result.add(new Rational(
+                    BigInteger.ONE,
+                    denom
+            ));
+            denom = denom.multiply(BigInteger.valueOf(i));
+        }
+        assertEquals(Math.E, result.doubleValue(), 1E-15);
     }
 }
