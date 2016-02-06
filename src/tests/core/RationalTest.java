@@ -48,6 +48,7 @@ public class RationalTest {
         assertEquals(rational1, rational2);
         assertEquals(rational1, rational3);
         assertEquals(rational2, rational3);
+        assertTrue(rational2.getDenominator().signum() > 0);
     }
 
     @Test(expected = ArithmeticException.class)
@@ -68,28 +69,33 @@ public class RationalTest {
     }
 
     @Test
-    public void testNegate() throws Exception {
-
+    public void testAddition() throws Exception {
+        Rational rational1 = new Rational(42, 571);
+        Rational rational2 = new Rational(-56, -367);
+        assertEquals(
+                new Rational(47390, 209557),
+                rational1.add(rational2)
+        );
+        assertEquals(
+                new Rational(-16562, 209557),
+                rational1.subtract(rational2)
+        );
     }
 
     @Test
-    public void testReciprocate() throws Exception {
-
-    }
-
-    @Test
-    public void testAdd() throws Exception {
-
-    }
-
-    @Test
-    public void testMultiply() throws Exception {
-
+    public void testMultiplication() throws Exception {
+        Rational rational1 = new Rational(4, 42);
+        Rational rational2 = new Rational(21, 3);
+        Rational rational3 = new Rational(3, 2);
+        assertEquals(
+                Rational.ONE,
+                rational1.multiply(rational2).multiply(rational3)
+        );
     }
 
     @Test
     public void testPow() throws Exception {
-
+        assertEquals(new Rational(19683, 512), new Rational(2, 3).pow(-9));
     }
 
     @Test

@@ -175,10 +175,10 @@ public class Rational extends Number implements Comparable<Rational> {
      * @return The sum of this and the Rational term in simplest form.
      */
     public Rational add(Rational term) {
-        BigInteger part1 = this.num.max(term.den);
-        BigInteger part2 = term.num.max(this.den);
+        BigInteger part1 = this.num.multiply(term.den);
+        BigInteger part2 = term.num.multiply(this.den);
         BigInteger num = part1.add(part2);
-        return new Rational(num, this.den.max(term.den));
+        return new Rational(num, this.den.multiply(term.den));
     }
 
     /**
