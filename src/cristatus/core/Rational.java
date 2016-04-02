@@ -3,12 +3,13 @@ package cristatus.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.util.Objects;
 
 /**
  * @author Subhomoy Haldar
- * @version 1.0
+ * @version 4.0
  */
-public class Rational extends Number {
+public class Rational extends Number implements Comparable<Rational> {
 
     // "psf" constants
 
@@ -60,11 +61,10 @@ public class Rational extends Number {
     }
 
     public static Rational valueOf(Number num, Number den) {
-        BigInteger n;
-        BigInteger d;
-        BigDecimal n0;
-        BigDecimal d0;
+        BigInteger n, d;
+        BigDecimal n0, d0;
         if (isFractional(num) || isFractional(den)) {
+            // try to prevent expensive String parsing
             n0 = num instanceof BigDecimal
                     ? (BigDecimal) num
                     : new BigDecimal(num.toString());
@@ -79,8 +79,13 @@ public class Rational extends Number {
             else
                 d = d.multiply(BigInteger.TEN.pow(scale));
         } else {
-            n = new BigInteger(num.toString());
-            d = new BigInteger(den.toString());
+            // Try to skip toString altogether
+            n = num instanceof BigInteger
+                    ? (BigInteger) num
+                    : BigInteger.valueOf(num.longValue());
+            d = den instanceof BigInteger
+                    ? (BigInteger) den
+                    : BigInteger.valueOf(num.longValue());
         }
         return getCorrected(n, d);
     }
@@ -115,6 +120,8 @@ public class Rational extends Number {
         return new Rational(num, den);
     }
 
+    // Methods from Number.java and extras
+
     public BigDecimal toBigDecimal(MathContext context) {
         return new BigDecimal(num).divide(new BigDecimal(den), context);
     }
@@ -139,14 +146,29 @@ public class Rational extends Number {
         return toBigDecimal(MathContext.DECIMAL128).doubleValue();
     }
 
+    // Methods from Object.java
+
     public boolean equals(Object other) {
         if (!(other instanceof Rational)) return false;
         Rational r = (Rational) other;
-        return num.signum() == r.num.signum()
+        return num.signum() == r.num.signum()   // fast reject
                 && num.multiply(r.den).equals(den.multiply(r.num));
+    }
+
+    public int hashCode() {
+        return Objects.hash(num, den);
     }
 
     public String toString() {
         return num + "/" + den;
+    }
+
+    // Comparable compareTo...
+
+    public int compareTo(Rational r) {
+        // A big help, this one...
+        if (num.signum() != r.num.signum())
+            return Integer.compare(num.signum(), r.num.signum());
+        return num.multiply(r.den).compareTo(r.num.multiply(den));
     }
 }
