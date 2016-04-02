@@ -9,6 +9,7 @@ import java.util.Objects;
  * @author Subhomoy Haldar
  * @version 4.0
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Rational extends Number implements Comparable<Rational> {
 
     // "psf" constants
@@ -38,6 +39,20 @@ public class Rational extends Number implements Comparable<Rational> {
         BigInteger gcd = num.gcd(den);
         this.num = num.divide(gcd);
         this.den = den.divide(gcd);
+    }
+
+    // public getters
+
+    public BigInteger getNumerator() {
+        return num;
+    }
+
+    public BigInteger getDenominator() {
+        return den;
+    }
+
+    public int signum() {
+        return num.signum();
     }
 
     // Factory methods - always validate arguments
@@ -85,7 +100,7 @@ public class Rational extends Number implements Comparable<Rational> {
                     : BigInteger.valueOf(num.longValue());
             d = den instanceof BigInteger
                     ? (BigInteger) den
-                    : BigInteger.valueOf(num.longValue());
+                    : BigInteger.valueOf(den.longValue());
         }
         return getCorrected(n, d);
     }
@@ -98,7 +113,12 @@ public class Rational extends Number implements Comparable<Rational> {
 
     private static Rational processBig(BigDecimal decimal) {
         BigInteger num = decimal.unscaledValue();
-        BigInteger den = BigInteger.TEN.pow(-decimal.scale());
+        BigInteger den = BigInteger.ONE;
+        int scale = decimal.scale();
+        if (scale < 0)
+            num = num.multiply(BigInteger.TEN.pow(-scale));
+        else
+            den = den.multiply(BigInteger.TEN.pow(scale));
         return getCorrected(num, den);
     }
 
@@ -123,7 +143,9 @@ public class Rational extends Number implements Comparable<Rational> {
     // Methods from Number.java and extras
 
     public BigDecimal toBigDecimal(MathContext context) {
-        return new BigDecimal(num).divide(new BigDecimal(den), context);
+        return new BigDecimal(num)
+                .divide(new BigDecimal(den), context)
+                .stripTrailingZeros();
     }
 
     public BigInteger toBigInteger() {
@@ -151,7 +173,7 @@ public class Rational extends Number implements Comparable<Rational> {
     public boolean equals(Object other) {
         if (!(other instanceof Rational)) return false;
         Rational r = (Rational) other;
-        return num.signum() == r.num.signum()   // fast reject
+        return signum() == r.signum()   // fast reject
                 && num.multiply(r.den).equals(den.multiply(r.num));
     }
 
@@ -167,8 +189,8 @@ public class Rational extends Number implements Comparable<Rational> {
 
     public int compareTo(Rational r) {
         // A big help, this one...
-        if (num.signum() != r.num.signum())
-            return Integer.compare(num.signum(), r.num.signum());
+        if (signum() != r.signum())
+            return Integer.compare(signum(), r.signum());
         return num.multiply(r.den).compareTo(r.num.multiply(den));
     }
 }
