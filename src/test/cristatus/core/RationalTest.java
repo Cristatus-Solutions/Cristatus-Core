@@ -275,4 +275,79 @@ public class RationalTest {
             );
         }
     }
+
+    @Test
+    public void testDoubleAddition() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            double d1 = random.nextDouble();
+            double d2 = random.nextDouble();
+            double sum = d1 + d2;
+            double dif = d1 - d2;
+            Rational r1 = Rational.valueOf(d1);
+            Rational r2 = Rational.valueOf(d2);
+            assertEquals(sum, r1.add(r2).doubleValue(), DBL_TOLERANCE);
+            assertEquals(dif, r1.subtract(r2).doubleValue(), DBL_TOLERANCE);
+            assertEquals(dif, r1.add(r2.negate()).doubleValue(), DBL_TOLERANCE);
+        }
+    }
+
+    @Test
+    public void testBigDecimalAddition() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            BigDecimal d1 = getRandomDecimal(random);
+            BigDecimal d2 = getRandomDecimal(random);
+            BigDecimal sum = d1.add(d2, CONTEXT).stripTrailingZeros();
+            BigDecimal dif = d1.subtract(d2, CONTEXT).stripTrailingZeros();
+            Rational r1 = Rational.valueOf(d1);
+            Rational r2 = Rational.valueOf(d2);
+            assertEquals(sum, r1.add(r2).toBigDecimal(CONTEXT));
+            assertEquals(dif, r1.subtract(r2).toBigDecimal(CONTEXT));
+            assertEquals(dif, r1.add(r2.negate()).toBigDecimal(CONTEXT));
+        }
+    }
+
+    @Test
+    public void testConstants() throws Exception {
+        assertEquals(Rational.ZERO, Rational.valueOf(0, 100));
+        assertEquals(Rational.ONE, Rational.valueOf(Math.PI, Math.PI));
+        assertEquals(Rational.TEN, Rational.valueOf(50, 5));
+        assertEquals(Rational.HALF, Rational.valueOf(12, 24.0));
+        assertEquals(Rational.QUARTER, Rational.valueOf(15.0, 60));
+        assertEquals(Rational.THIRD, Rational.valueOf(5, 15));
+        assertEquals(Rational.TENTH, Rational.valueOf(5, 50));
+    }
+
+    @Test
+    public void testGetters() throws Exception {
+        Random random = new Random();
+        BigInteger i1 = new BigInteger(BIT_BOUND, random);
+        BigInteger i2 = new BigInteger(BIT_BOUND, random);
+        BigInteger gcd = i1.gcd(i2);
+        i1 = i1.divide(gcd);
+        i2 = i2.divide(gcd);
+        Rational rational = Rational.valueOf(i1, i2);
+        assertEquals(rational.getNumerator(), i1);
+        assertEquals(rational.getDenominator(), i2);
+    }
+
+    @Test
+    public void testMultiplicationAndDivision() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            BigDecimal decimal1 = getRandomDecimal(random);
+            BigDecimal decimal2 = getRandomDecimal(random);
+            BigDecimal product = decimal1.multiply(decimal2, CONTEXT)
+                    .stripTrailingZeros();
+            BigDecimal quotient = decimal1.divide(decimal2, CONTEXT)
+                    .stripTrailingZeros();
+            Rational rational1 = Rational.valueOf(decimal1);
+            Rational rational2 = Rational.valueOf(decimal2);
+            Rational rational3 = rational1.multiply(rational2);
+            Rational rational4 = rational1.divide(rational2);
+            assertEquals(rational3.toBigDecimal(CONTEXT), product);
+            assertEquals(rational4.toBigDecimal(CONTEXT), quotient);
+        }
+    }
 }

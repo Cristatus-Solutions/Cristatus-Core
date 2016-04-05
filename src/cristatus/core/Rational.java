@@ -9,7 +9,7 @@ import java.util.Objects;
  * @author Subhomoy Haldar
  * @version 4.0
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings("WeakerAccess")
 public class Rational extends Number implements Comparable<Rational> {
 
     // "psf" constants
@@ -207,5 +207,35 @@ public class Rational extends Number implements Comparable<Rational> {
         if (signum() != r.signum())
             return Integer.compare(signum(), r.signum());
         return num.multiply(r.den).compareTo(r.num.multiply(den));
+    }
+
+    // Arithmetic methods
+
+    public Rational add(Rational term) {
+        BigInteger n1 = this.num.multiply(term.den);
+        BigInteger n2 = term.num.multiply(this.den);
+        return new Rational(n1.add(n2), this.den.multiply(term.den));
+    }
+
+    public Rational subtract(Rational term) {
+        BigInteger n1 = this.num.multiply(term.den);
+        BigInteger n2 = term.num.multiply(this.den);
+        return new Rational(n1.subtract(n2), this.den.multiply(term.den));
+    }
+
+    public Rational negate() {
+        return new Rational(num.negate(), den);
+    }
+
+    public Rational reciprocate() {
+        return new Rational(den, num);
+    }
+
+    public Rational multiply(Rational term) {
+        return new Rational(num.multiply(term.num), den.multiply(term.den));
+    }
+
+    public Rational divide(Rational term) {
+        return this.multiply(term.reciprocate());
     }
 }
