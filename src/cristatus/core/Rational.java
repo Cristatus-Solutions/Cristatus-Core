@@ -57,61 +57,26 @@ public class Rational extends Number implements Comparable<Rational> {
 
     // Factory methods - always validate arguments
 
-    public static Rational valueOf(Number number) {
+    public static Rational valueOf(Number number)
+            throws IllegalArgumentException {
         // Quick exits
         if (number == null)
-            throw new ArithmeticException("Null argument");
+            throw new IllegalArgumentException("Null argument");
         if (number instanceof Rational)
             return (Rational) number;
         // Approximation isn't any faster than using String...
         if (number instanceof Double || number instanceof Float)
-            return processBig(BigDecimal.valueOf(number.doubleValue()));
+            return rationalFromBigDecimal(BigDecimal.valueOf(number.doubleValue()));
         // A simple BigInteger surely won't cause any trouble
         if (number instanceof BigInteger)
             return new Rational((BigInteger) number, BigInteger.ONE);
         if (number instanceof BigDecimal)
-            return processBig((BigDecimal) number);
+            return rationalFromBigDecimal((BigDecimal) number);
         // Unrecognised Number type... fallback to BigDecimal
-        return processBig(new BigDecimal(number.toString()));
+        return rationalFromBigDecimal(new BigDecimal(number.toString()));
     }
 
-    public static Rational valueOf(Number num, Number den) {
-        BigInteger n, d;
-        BigDecimal n0, d0;
-        if (isFractional(num) || isFractional(den)) {
-            // try to prevent expensive String parsing
-            n0 = num instanceof BigDecimal
-                    ? (BigDecimal) num
-                    : new BigDecimal(num.toString());
-            d0 = den instanceof BigDecimal
-                    ? (BigDecimal) den
-                    : new BigDecimal(den.toString());
-            n = n0.unscaledValue();
-            d = d0.unscaledValue();
-            int scale = n0.scale() - d0.scale();
-            if (scale < 0)
-                n = n.multiply(BigInteger.TEN.pow(-scale));
-            else
-                d = d.multiply(BigInteger.TEN.pow(scale));
-        } else {
-            // Try to skip toString altogether
-            n = num instanceof BigInteger
-                    ? (BigInteger) num
-                    : BigInteger.valueOf(num.longValue());
-            d = den instanceof BigInteger
-                    ? (BigInteger) den
-                    : BigInteger.valueOf(den.longValue());
-        }
-        return getCorrected(n, d);
-    }
-
-    private static boolean isFractional(Number number) {
-        return number instanceof Float || number instanceof Double
-                || number instanceof BigDecimal;
-    }
-
-
-    private static Rational processBig(BigDecimal decimal) {
+    private static Rational rationalFromBigDecimal(BigDecimal decimal) {
         BigInteger num = decimal.unscaledValue();
         BigInteger den = BigInteger.ONE;
         int scale = decimal.scale();
@@ -119,10 +84,60 @@ public class Rational extends Number implements Comparable<Rational> {
             num = num.multiply(BigInteger.TEN.pow(-scale));
         else
             den = den.multiply(BigInteger.TEN.pow(scale));
-        return getCorrected(num, den);
+        return getCorrectedRational(num, den);
     }
 
-    private static Rational getCorrected(BigInteger num, BigInteger den)
+    public static Rational valueOf(Number num, Number den)
+            throws IllegalArgumentException {
+        if (num == null)
+            throw new IllegalArgumentException("Null numerator.");
+        if (den == null)
+            throw new IllegalArgumentException("Null denominator.");
+        if (isFractional(num) || isFractional(den)) {
+            return getRationalFromFractions(num, den);
+        } else {
+            return getRationalFromIntegers(num, den);
+        }
+    }
+
+    private static boolean isFractional(Number number) {
+        return number instanceof Float || number instanceof Double
+                || number instanceof BigDecimal;
+    }
+
+    private static Rational getRationalFromFractions(Number num,
+                                                     Number den) {
+        // try to prevent expensive String parsing
+        BigDecimal n0 = num instanceof BigDecimal
+                ? (BigDecimal) num
+                : new BigDecimal(num.toString());
+        BigDecimal d0 = den instanceof BigDecimal
+                ? (BigDecimal) den
+                : new BigDecimal(den.toString());
+        BigInteger n = n0.unscaledValue();
+        BigInteger d = d0.unscaledValue();
+        int scale = n0.scale() - d0.scale();
+        if (scale < 0)
+            n = n.multiply(BigInteger.TEN.pow(-scale));
+        else
+            d = d.multiply(BigInteger.TEN.pow(scale));
+        return getCorrectedRational(n, d);
+    }
+
+    private static Rational getRationalFromIntegers(Number num,
+                                                    Number den) {
+        // Try to skip toString altogether
+        BigInteger n = num instanceof BigInteger
+                ? (BigInteger) num
+                : BigInteger.valueOf(num.longValue());
+        BigInteger d = den instanceof BigInteger
+                ? (BigInteger) den
+                : BigInteger.valueOf(den.longValue());
+        return getCorrectedRational(n, d);
+    }
+
+    private static Rational getCorrectedRational(BigInteger num,
+                                                 BigInteger den)
             throws IllegalArgumentException {
         // Don't allow zero denominators
         if (den.signum() == 0)
