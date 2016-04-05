@@ -35,6 +35,7 @@ import java.math.MathContext;
 import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 
 /**
  * @author Subhomoy Haldar
@@ -239,7 +240,11 @@ public class RationalTest {
             Rational rational2 = Rational.valueOf(
                     num.multiply(gcd), den.multiply(gcd)
             );
+            Rational rational3 = Rational.valueOf(
+                    num.multiply(gcd), den
+            );
             assertEquals(rational1, rational2);
+            assertNotEquals(rational1, rational3);
             assertEquals(rational1.hashCode(), rational2.hashCode());
             int div = getOneIfZero(random.nextInt());
             assertEquals(
