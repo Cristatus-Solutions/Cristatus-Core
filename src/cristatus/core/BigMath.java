@@ -47,6 +47,22 @@ public class BigMath {
                 .stripTrailingZeros().toPlainString());
     }
 
+    public static BigDecimal sqrt(BigInteger integer, MathContext context) {
+        return nthRoot(integer, 2, context);
+    }
+
+    public static BigDecimal sqrt(BigDecimal decimal, MathContext context) {
+        return nthRoot(decimal, 2, context);
+    }
+
+    public static BigDecimal cbrt(BigInteger integer, MathContext context) {
+        return nthRoot(integer, 3, context);
+    }
+
+    public static BigDecimal cbrt(BigDecimal decimal, MathContext context) {
+        return nthRoot(decimal, 3, context);
+    }
+
     public static BigDecimal nthRoot(BigInteger integer, int n,
                                      MathContext context) {
         return nthRoot(new BigDecimal(integer), n, context);
