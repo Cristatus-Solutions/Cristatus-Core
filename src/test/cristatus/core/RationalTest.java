@@ -51,7 +51,24 @@ public class RationalTest {
     private static final float FLT_TOLERANCE = 1E-6f;
     private static final double DBL_TOLERANCE = 1E-14;
 
-    @Test
+    // Timing factors... Will make sure tests take a finite time
+    private static final int SINGLE_ARGUMENT_FACTOR = 10;
+    private static final int DOUBLE_ARGUMENT_FACTOR = 10;
+    private static final int TO_BD_FACTOR = 10;
+    private static final int TO_BI_FACTOR = 10;
+    private static final int INTEGER_VALUE_FACTOR = 5;
+    private static final int FRACTION_VALUE_FACTOR = 5;
+    private static final int EQUALS_HASHCODE_FACTOR = 30;
+    private static final int TO_STRING_FACTOR = 20;
+    private static final int COMPARE_TO_FACTOR = 10;
+    private static final int DBL_ADDITION_FACTOR = 10;
+    private static final int BI_ADDITION_FACTOR = 500;
+    private static final int CONSTANTS_CHECK_FACTOR = 1;
+    private static final int GETTER_FACTOR = 1;
+    private static final int MULTIPLICATION_FACTOR = 20;
+    private static final int POWER_FACTOR = 500;
+
+    @Test(timeOut = TRIES * SINGLE_ARGUMENT_FACTOR)
     public void testValueOfSingleArgument() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -101,7 +118,7 @@ public class RationalTest {
         assertEquals(randomBigDecimal, rational6.toBigDecimal(CONTEXT));
     }
 
-    @Test
+    @Test(timeOut = TRIES * DOUBLE_ARGUMENT_FACTOR)
     public void testValueOfDoubleArgument() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -169,7 +186,7 @@ public class RationalTest {
         ).stripTrailingZeros();
     }
 
-    @Test
+    @Test(timeOut = TRIES * TO_BD_FACTOR)
     public void testToBigDecimal() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -179,7 +196,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * TO_BI_FACTOR)
     public void testToBigInteger() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -191,7 +208,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * INTEGER_VALUE_FACTOR)
     public void testIntValueAndLongValue() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -208,7 +225,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * FRACTION_VALUE_FACTOR)
     public void testFloatAndDoubleValue() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -229,7 +246,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * EQUALS_HASHCODE_FACTOR)
     public void testEqualsAndHashCode() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -255,7 +272,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * TO_STRING_FACTOR)
     public void testToString() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -269,7 +286,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * COMPARE_TO_FACTOR)
     public void testCompareTo() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -282,7 +299,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * DBL_ADDITION_FACTOR)
     public void testDoubleAddition() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -298,7 +315,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * BI_ADDITION_FACTOR)
     public void testBigDecimalAddition() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -314,7 +331,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * CONSTANTS_CHECK_FACTOR)
     public void testConstants() throws Exception {
         assertEquals(Rational.ZERO, Rational.valueOf(0, 100));
         assertEquals(Rational.ONE, Rational.valueOf(Math.PI, Math.PI));
@@ -325,7 +342,7 @@ public class RationalTest {
         assertEquals(Rational.TENTH, Rational.valueOf(5, 50));
     }
 
-    @Test
+    @Test(timeOut = TRIES * GETTER_FACTOR)
     public void testGetters() throws Exception {
         Random random = new Random();
         BigInteger i1 = new BigInteger(BIT_BOUND, random);
@@ -338,7 +355,7 @@ public class RationalTest {
         assertEquals(rational.getDenominator(), i2);
     }
 
-    @Test
+    @Test(timeOut = TRIES * MULTIPLICATION_FACTOR)
     public void testMultiplicationAndDivision() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -357,7 +374,7 @@ public class RationalTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * POWER_FACTOR)
     public void testPow() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
