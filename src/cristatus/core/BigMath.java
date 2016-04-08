@@ -33,6 +33,7 @@ import java.math.MathContext;
  * @author Subhomoy Haldar
  * @version 1.0
  */
+@SuppressWarnings("WeakerAccess")
 public class BigMath {
 
     public static void main(String[] args) {
@@ -67,9 +68,7 @@ public class BigMath {
                                                 int n) {
         int nM1 = n - 1;
         BigInteger N = BigInteger.valueOf(n);
-        BigInteger guess = BigInteger.ONE.shiftLeft(
-                raw.bitLength() / n
-        );
+        BigInteger guess = BigInteger.ONE.shiftLeft(raw.bitLength() / n);
         BigInteger delta;
         do {
             BigInteger powered = guess.pow(nM1);
