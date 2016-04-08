@@ -43,12 +43,13 @@ import static org.testng.Assert.assertNotEquals;
  */
 public class RationalTest {
 
-    private static final int TRIES = 500;
+    private static final int TRIES = 100;
     private static final int BIT_BOUND = 4_000;
     private static final int SCALE_BOUND = 10_000;
+    private static final int POW_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
     private static final float FLT_TOLERANCE = 1E-6f;
-    private static final double DBL_TOLERANCE = 1E-15;
+    private static final double DBL_TOLERANCE = 1E-14;
 
     @Test
     public void testValueOfSingleArgument() throws Exception {
@@ -353,6 +354,25 @@ public class RationalTest {
             Rational rational4 = rational1.divide(rational2);
             assertEquals(rational3.toBigDecimal(CONTEXT), product);
             assertEquals(rational4.toBigDecimal(CONTEXT), quotient);
+        }
+    }
+
+    @Test
+    public void testPow() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            double n = random.nextInt(POW_BOUND) *
+                    (random.nextBoolean() ? -1 : 1);
+            double d = getOneIfZero(random.nextInt(POW_BOUND));
+            double value = Math.abs(random.nextDouble());
+            Rational rational = Rational.valueOf(value);
+            Rational power = Rational.valueOf(n, d);
+            assertEquals(
+                    rational.pow(power, CONTEXT).doubleValue()
+                            / Math.pow(value, n / d),
+                    1,
+                    DBL_TOLERANCE
+            );
         }
     }
 }

@@ -3,6 +3,7 @@ package cristatus.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,8 @@ public class Rational extends Number implements Comparable<Rational> {
     public static final Rational THIRD = new Rational(1, 3);
     public static final Rational TENTH = new Rational(1, 10);
 
+    private static final MathContext DOUBLE_CONTEXT
+            = new MathContext(64, RoundingMode.HALF_UP);
 
     // Class data
 
@@ -176,11 +179,11 @@ public class Rational extends Number implements Comparable<Rational> {
     }
 
     public float floatValue() {
-        return toBigDecimal(MathContext.DECIMAL64).floatValue();
+        return toBigDecimal(MathContext.DECIMAL128).floatValue();
     }
 
     public double doubleValue() {
-        return toBigDecimal(MathContext.DECIMAL128).doubleValue();
+        return toBigDecimal(DOUBLE_CONTEXT).doubleValue();
     }
 
     // Methods from Object.java
@@ -237,5 +240,23 @@ public class Rational extends Number implements Comparable<Rational> {
 
     public Rational divide(Rational term) {
         return this.multiply(term.reciprocate());
+    }
+
+    public Rational pow(Rational power, MathContext context)
+            throws ArithmeticException {
+        if (num.signum() < 0 && (power.intValue() & 1) != 1) {
+            throw new ArithmeticException("Real principal root doesn't exist.");
+        }
+        int pow = power.num.intValueExact();
+        boolean neg = pow < 0;
+        pow = neg ? -pow : pow;
+        BigInteger n0 = num.pow(pow);
+        BigInteger d0 = den.pow(pow);
+        int root = power.den.intValueExact();
+        if (root == 1)
+            return neg ? new Rational(d0, n0) : new Rational(n0, d0);
+        BigDecimal n = BigMath.nthRoot(n0, root, context);
+        BigDecimal d = BigMath.nthRoot(d0, root, context);
+        return neg ? Rational.valueOf(d, n) : Rational.valueOf(n, d);
     }
 }
