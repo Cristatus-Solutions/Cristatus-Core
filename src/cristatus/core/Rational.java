@@ -279,9 +279,13 @@ public class Rational extends Number implements Comparable<Rational> {
         BigInteger d0 = den.pow(pow);
         int root = power.den.intValueExact();
         if (root == 1)
-            return neg ? new Rational(d0, n0) : new Rational(n0, d0);
+            return neg
+                    ? getCorrectedRational(d0, n0)
+                    : getCorrectedRational(n0, d0);
         BigDecimal n = BigMath.nthRoot(n0, root, context);
         BigDecimal d = BigMath.nthRoot(d0, root, context);
-        return neg ? Rational.valueOf(d, n) : Rational.valueOf(n, d);
+        return neg
+                ? getRationalFromFractions(d, n)
+                : getRationalFromFractions(n, d);
     }
 }
