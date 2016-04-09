@@ -36,17 +36,6 @@ import java.math.MathContext;
 @SuppressWarnings("WeakerAccess")
 public class BigMath {
 
-    public static void main(String[] args) {
-        BigDecimal decimal = new BigDecimal("41800179870979097890");
-        int n = 2;
-        MathContext context = new MathContext(11);
-        BigDecimal answer = nthRoot(decimal, n, context);
-        System.out.println(answer.toPlainString());
-        System.out.println(decimal.toPlainString());
-        System.out.println(answer.pow(n, context)
-                .stripTrailingZeros().toPlainString());
-    }
-
     public static BigDecimal sqrt(BigInteger integer, MathContext context) {
         return nthRoot(integer, 2, context);
     }
