@@ -460,34 +460,109 @@ public class Rational extends Number implements Comparable<Rational> {
 
     // Arithmetic methods
 
+    /**
+     * This method calculates the sum of this Rational and the one passed in
+     * the argument.
+     *
+     * @param term The Rational number to be added.
+     * @return The sum of this Rational and the given one.
+     */
     public Rational add(Rational term) {
         BigInteger n1 = this.num.multiply(term.den);
         BigInteger n2 = term.num.multiply(this.den);
         return new Rational(n1.add(n2), this.den.multiply(term.den));
     }
 
+    /**
+     * This method calculates the difference between this Rational and the
+     * one passed in the argument.
+     *
+     * @param term The Rational number to be subtracted from this.
+     * @return The difference of this Rational and the given one.
+     */
     public Rational subtract(Rational term) {
         BigInteger n1 = this.num.multiply(term.den);
         BigInteger n2 = term.num.multiply(this.den);
         return new Rational(n1.subtract(n2), this.den.multiply(term.den));
     }
 
+    /**
+     * Returns the additive inverse or negative of this Rational.
+     * <p>
+     * The additive inverse of a number "x" is defined as that number, to which
+     * if "x" is added, the sum will be zero (or the additive identity). It is
+     * represented as "-x".
+     *
+     * @return The additive inverse or negative of this Rational.
+     */
     public Rational negate() {
         return new Rational(num.negate(), den);
     }
 
+    /**
+     * Returns the multiplicative inverse or reciprocal of this Rational.
+     * <p>
+     * The multiplicative inverse of a number "x" is defined as that number,
+     * to which if "x" is multiplied, the product will be one (or the
+     * multiplicative identity). It is represented as 1/x.
+     *
+     * @return The multiplicative inverse or reciprocal of this Rational.
+     */
     public Rational reciprocate() {
         return new Rational(den, num);
     }
 
+    /**
+     * This method calculates the product of this Rational and the one given
+     * in the argument.
+     *
+     * @param term The Rational to multiply this with.
+     * @return The product of this Rational and the given one.
+     */
     public Rational multiply(Rational term) {
         return new Rational(num.multiply(term.num), den.multiply(term.den));
     }
 
+    /**
+     * This method calculates the quotient of this Rational and the one given
+     * in the argument.
+     *
+     * @param term The Rational divisor.
+     * @return The quotient of this Rational and the given one.
+     */
     public Rational divide(Rational term) {
         return this.multiply(term.reciprocate());
     }
 
+    /**
+     * Returns the absolute value or magnitude of this Rational number.
+     * <p>
+     * The absolute value of a number "x" is defined as "x" if x &ge; 0 and
+     * "-x" is x &lt; 0.
+     *
+     * @return The absolute value or magnitude of this Rational number.
+     */
+    public Rational abs() {
+        return signum() < 0 ? negate() : this;
+    }
+
+    /**
+     * This method raises this Rational to the given power and returns the
+     * result.
+     * <p>
+     * The speciality of this method is that it works for fractional powers
+     * as well, thereby acting as an extension of the
+     * {@link Math#pow(double, double) Math.pow()} function.
+     * <p>
+     * The MathContext is needed to specify the accuracy requirement for
+     * non-integral powers. In case of integral powers, it may be kept <code>null</code>.
+     *
+     * @param power   The power to raise this Rational to.
+     * @param context The context to specify the precision in case of
+     *                non-integral powers.
+     * @return This Rational raised to the given power.
+     * @throws ArithmeticException
+     */
     public Rational pow(Rational power, MathContext context)
             throws ArithmeticException {
         if (signum() < 0 && (power.intValue() & 1) != 1) {
@@ -505,9 +580,23 @@ public class Rational extends Number implements Comparable<Rational> {
             return nthRoot(n0, d0, root, neg, context);
     }
 
-    private Rational nthRoot(BigInteger n0, BigInteger d0,
-                             int root, boolean neg,
-                             MathContext context) {
+    /**
+     * Control is delegated to this method when the power required is
+     * non-integral.
+     * <p>
+     * It takes the nth root after exponentiation has been dealt with by the
+     * main pow method.
+     *
+     * @param n0      The numerator to use.
+     * @param d0      The denominator to use.
+     * @param root    The required root.
+     * @param neg     Is the power negative?
+     * @param context To specify the accuracy requirement.
+     * @return The final result of raising this Rational to the required power.
+     */
+    private static Rational nthRoot(BigInteger n0, BigInteger d0,
+                                    int root, boolean neg,
+                                    MathContext context) {
         if (context == null) {
             throw new ArithmeticException("MathContext is null for fractional power.");
         }

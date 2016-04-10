@@ -43,7 +43,7 @@ import static org.testng.Assert.assertNotEquals;
  */
 public class RationalTest {
 
-    private static final int TRIES = 100;
+    private static final int TRIES = 200;
     private static final int BIT_BOUND = 4_000;
     private static final int SCALE_BOUND = 10_000;
     private static final int POW_BOUND = 100;
@@ -62,11 +62,13 @@ public class RationalTest {
     private static final int TO_STRING_FACTOR = 20;
     private static final int COMPARE_TO_FACTOR = 10;
     private static final int DBL_ADDITION_FACTOR = 10;
-    private static final int BI_ADDITION_FACTOR = 500;
+    private static final int BD_ADDITION_FACTOR = 250;
     private static final int CONSTANTS_CHECK_FACTOR = 1;
     private static final int GETTER_FACTOR = 1;
     private static final int MULTIPLICATION_FACTOR = 20;
-    private static final int POWER_FACTOR = 500;
+    private static final int POWER_FACTOR = 250;
+    private static final int ABSOLUTE_FACTOR = 10;
+    private static final int INTEGER_POWER_FACTOR = 250;
 
     @Test(timeOut = TRIES * SINGLE_ARGUMENT_FACTOR)
     public void testValueOfSingleArgument() throws Exception {
@@ -315,7 +317,7 @@ public class RationalTest {
         }
     }
 
-    @Test(timeOut = TRIES * BI_ADDITION_FACTOR)
+    @Test(timeOut = TRIES * BD_ADDITION_FACTOR)
     public void testBigDecimalAddition() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -389,6 +391,34 @@ public class RationalTest {
                             / Math.pow(value, n / d),
                     1,
                     DBL_TOLERANCE
+            );
+        }
+    }
+
+    @Test(timeOut = TRIES * ABSOLUTE_FACTOR)
+    public void testAbsolute() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            BigDecimal decimal = getRandomDecimal(random);
+            Rational rational = Rational.valueOf(decimal);
+            assertEquals(
+                    rational.abs().toBigDecimal(CONTEXT),
+                    decimal.abs().round(CONTEXT).stripTrailingZeros()
+            );
+        }
+    }
+
+    @Test(timeOut = TRIES * INTEGER_POWER_FACTOR)
+    public void testIntegerPowers() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            int power = random.nextInt(POW_BOUND);
+            BigDecimal decimal = getRandomDecimal(random);
+            Rational rational = Rational.valueOf(decimal);
+            rational = rational.pow(Rational.valueOf(power), null);
+            assertEquals(
+                    rational.toBigDecimal(CONTEXT),
+                    decimal.pow(power).round(CONTEXT).stripTrailingZeros()
             );
         }
     }
