@@ -36,6 +36,8 @@ import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
+import static test.cristatus.core.TestUtils.*;
+import static test.cristatus.core.TestUtils.getRandomBigDecimal;
 
 /**
  * @author Subhomoy Haldar
@@ -44,8 +46,6 @@ import static org.testng.Assert.assertNotEquals;
 public class RationalTest {
 
     private static final int TRIES = 200;
-    private static final int BIT_BOUND = 4_000;
-    private static final int SCALE_BOUND = 10_000;
     private static final int POW_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
     private static final float FLT_TOLERANCE = 1E-6f;
@@ -66,9 +66,9 @@ public class RationalTest {
     private static final int CONSTANTS_CHECK_FACTOR = 1;
     private static final int GETTER_FACTOR = 1;
     private static final int MULTIPLICATION_FACTOR = 20;
-    private static final int POWER_FACTOR = 250;
+    private static final int POWER_FACTOR = 1000;
     private static final int ABSOLUTE_FACTOR = 10;
-    private static final int INTEGER_POWER_FACTOR = 250;
+    private static final int INTEGER_POWER_FACTOR = 1000;
 
     @Test(timeOut = TRIES * SINGLE_ARGUMENT_FACTOR)
     public void testValueOfSingleArgument() throws Exception {
@@ -108,14 +108,13 @@ public class RationalTest {
     }
 
     private static void testVOSAWithBigInteger(Random random) {
-        BigInteger randomBigInteger
-                = new BigInteger(BIT_BOUND, random);
+        BigInteger randomBigInteger = getRandomBigInteger(random);
         Rational rational5 = Rational.valueOf(randomBigInteger);
         assertEquals(randomBigInteger, rational5.toBigInteger());
     }
 
     private static void testVOSAWithBigDecimal(Random random) {
-        BigDecimal randomBigDecimal = getRandomDecimal(random);
+        BigDecimal randomBigDecimal = getRandomBigDecimal(random, CONTEXT);
         Rational rational6 = Rational.valueOf(randomBigDecimal);
         assertEquals(randomBigDecimal, rational6.toBigDecimal(CONTEXT));
     }
@@ -136,7 +135,7 @@ public class RationalTest {
 
             // #2. fraction, BigInt
             double double2 = random.nextDouble();
-            BigInteger integer1 = new BigInteger(BIT_BOUND, random);
+            BigInteger integer1 = getRandomBigInteger(random);
             integer1 = getOneIfZero(integer1);
             Rational rational2 = Rational.valueOf(double2, integer1);
 
@@ -147,7 +146,7 @@ public class RationalTest {
             assertEquals(quotient3, rational2.toBigDecimal(CONTEXT));
 
             // #3. int, int
-            BigInteger integer2 = new BigInteger(BIT_BOUND, random);
+            BigInteger integer2 = getRandomBigInteger(random);
             long long2 = getOneIfZero(random.nextLong());
             Rational rational3 = Rational.valueOf(integer2, long2);
 
@@ -159,40 +158,11 @@ public class RationalTest {
         }
     }
 
-    private static BigInteger getOneIfZero(BigInteger integer) {
-        return integer.signum() == 0 ? BigInteger.ONE : integer;
-    }
-
-    private static int getOneIfZero(int integer) {
-        return integer == 0 ? 1 : integer;
-    }
-
-    private static long getOneIfZero(long integer) {
-        return integer == 0 ? 1 : integer;
-    }
-
-    private static float getOneIfZero(float fraction) {
-        return fraction == 0 ? 1 : fraction;
-    }
-
-    private static double getOneIfZero(double fraction) {
-        return fraction == 0 ? 1 : fraction;
-    }
-
-    private static BigDecimal getRandomDecimal(Random random) {
-        return new BigDecimal(
-                new BigInteger(BIT_BOUND, random),
-                random.nextInt(SCALE_BOUND) *
-                        (random.nextBoolean() ? -1 : 1),
-                CONTEXT
-        ).stripTrailingZeros();
-    }
-
     @Test(timeOut = TRIES * TO_BD_FACTOR)
     public void testToBigDecimal() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigDecimal decimal = getRandomDecimal(random);
+            BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);
             Rational rational = Rational.valueOf(decimal);
             assertEquals(decimal, rational.toBigDecimal(CONTEXT));
         }
@@ -202,8 +172,8 @@ public class RationalTest {
     public void testToBigInteger() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigInteger integer1 = new BigInteger(BIT_BOUND, random);
-            BigInteger integer2 = new BigInteger(BIT_BOUND, random);
+            BigInteger integer1 = getRandomBigInteger(random);
+            BigInteger integer2 = getRandomBigInteger(random);
             integer2 = getOneIfZero(integer2);
             Rational rational = Rational.valueOf(integer1, integer2);
             assertEquals(integer1.divide(integer2), rational.toBigInteger());
@@ -252,10 +222,10 @@ public class RationalTest {
     public void testEqualsAndHashCode() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigInteger num = new BigInteger(BIT_BOUND, random);
-            BigInteger den = new BigInteger(BIT_BOUND, random);
+            BigInteger num = getRandomBigInteger(random);
+            BigInteger den = getRandomBigInteger(random);
             den = getOneIfZero(den);
-            BigInteger gcd = new BigInteger(BIT_BOUND, random);
+            BigInteger gcd = getRandomBigInteger(random);
             Rational rational1 = Rational.valueOf(num, den);
             Rational rational2 = Rational.valueOf(
                     num.multiply(gcd), den.multiply(gcd)
@@ -278,8 +248,8 @@ public class RationalTest {
     public void testToString() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigInteger num = new BigInteger(BIT_BOUND, random);
-            BigInteger den = new BigInteger(BIT_BOUND, random);
+            BigInteger num = getRandomBigInteger(random);
+            BigInteger den = getRandomBigInteger(random);
             den = getOneIfZero(den);
             BigInteger gcd = num.gcd(den);
             num = num.divide(gcd);
@@ -292,8 +262,8 @@ public class RationalTest {
     public void testCompareTo() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigDecimal a = getRandomDecimal(random);
-            BigDecimal b = getRandomDecimal(random);
+            BigDecimal a = getRandomBigDecimal(random, CONTEXT);
+            BigDecimal b = getRandomBigDecimal(random, CONTEXT);
             assertEquals(
                     a.compareTo(b),
                     Rational.valueOf(a).compareTo(Rational.valueOf(b))
@@ -321,8 +291,8 @@ public class RationalTest {
     public void testBigDecimalAddition() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigDecimal d1 = getRandomDecimal(random);
-            BigDecimal d2 = getRandomDecimal(random);
+            BigDecimal d1 = getRandomBigDecimal(random, CONTEXT);
+            BigDecimal d2 = getRandomBigDecimal(random, CONTEXT);
             BigDecimal sum = d1.add(d2, CONTEXT).stripTrailingZeros();
             BigDecimal dif = d1.subtract(d2, CONTEXT).stripTrailingZeros();
             Rational r1 = Rational.valueOf(d1);
@@ -347,8 +317,8 @@ public class RationalTest {
     @Test(timeOut = TRIES * GETTER_FACTOR)
     public void testGetters() throws Exception {
         Random random = new Random();
-        BigInteger i1 = new BigInteger(BIT_BOUND, random);
-        BigInteger i2 = new BigInteger(BIT_BOUND, random);
+        BigInteger i1 = getRandomBigInteger(random);
+        BigInteger i2 = getRandomBigInteger(random);
         BigInteger gcd = i1.gcd(i2);
         i1 = i1.divide(gcd);
         i2 = i2.divide(gcd);
@@ -361,8 +331,8 @@ public class RationalTest {
     public void testMultiplicationAndDivision() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigDecimal decimal1 = getRandomDecimal(random);
-            BigDecimal decimal2 = getRandomDecimal(random);
+            BigDecimal decimal1 = getRandomBigDecimal(random, CONTEXT);
+            BigDecimal decimal2 = getRandomBigDecimal(random, CONTEXT);
             BigDecimal product = decimal1.multiply(decimal2, CONTEXT)
                     .stripTrailingZeros();
             BigDecimal quotient = decimal1.divide(decimal2, CONTEXT)
@@ -399,7 +369,7 @@ public class RationalTest {
     public void testAbsolute() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
-            BigDecimal decimal = getRandomDecimal(random);
+            BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);
             Rational rational = Rational.valueOf(decimal);
             assertEquals(
                     rational.abs().toBigDecimal(CONTEXT),
@@ -413,7 +383,7 @@ public class RationalTest {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
             int power = random.nextInt(POW_BOUND);
-            BigDecimal decimal = getRandomDecimal(random);
+            BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);
             Rational rational = Rational.valueOf(decimal);
             rational = rational.pow(Rational.valueOf(power), null);
             assertEquals(

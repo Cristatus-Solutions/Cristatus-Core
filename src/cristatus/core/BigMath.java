@@ -60,12 +60,17 @@ public class BigMath {
     public static BigDecimal nthRoot(BigDecimal decimal, int n,
                                      MathContext context) {
         BigInteger value = decimal.unscaledValue();
-        BigInteger padding = BigInteger.TEN.pow(context.getPrecision() * n);
+        int newScale = decimal.scale();
+        // Because the scale must be in the form of k*n, where k is an integer
+        int adjustment = n - newScale % n;
+        newScale += adjustment;
+        newScale /= n;
+        // Most of the time, the last digit differs... it's annoying
+        int precision = context.getPrecision() + adjustment + 1;
+        BigInteger padding = BigInteger.TEN.pow(precision * n + adjustment);
         value = value.multiply(padding);
-        int newScale = decimal.scale() / n;
         BigInteger eps = BigInteger.ONE;
-        return new BigDecimal(newtonApproximate(value, eps, n), newScale
-                + context.getPrecision());
+        return new BigDecimal(newtonApproximate(value, eps, n), newScale + precision);
     }
 
     private static BigInteger newtonApproximate(BigInteger raw,
