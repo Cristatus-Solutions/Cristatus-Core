@@ -70,4 +70,8 @@ class TestUtils {
     static BigInteger getRandomBigInteger(Random random) {
         return new BigInteger(BIT_BOUND, random);
     }
+
+    static MathContext getContextFor(BigInteger integer, int root) {
+        return new MathContext(integer.toString().length() + root);
+    }
 }

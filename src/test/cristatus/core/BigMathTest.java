@@ -34,6 +34,7 @@ import java.math.MathContext;
 import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
+import static test.cristatus.core.TestUtils.getContextFor;
 import static test.cristatus.core.TestUtils.getRandomBigDecimal;
 import static test.cristatus.core.TestUtils.getRandomBigInteger;
 
@@ -43,9 +44,10 @@ import static test.cristatus.core.TestUtils.getRandomBigInteger;
  */
 public class BigMathTest {
 
-    private static final int TRIES = 50;
+    private static final int TRIES = 10;
     private static final int ROOT_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
+    private static final int NTH_ROOT_FACTOR = 15_000;
 
     @Test
     public void testSquareRoot() throws Exception {
@@ -53,10 +55,11 @@ public class BigMathTest {
         for (int i = 0; i < TRIES; i++) {
             // BigInteger version
             BigInteger integer = getRandomBigInteger(random);
-            BigDecimal nthRoot = BigMath.sqrt(integer, CONTEXT);
+            MathContext context = getContextFor(integer, 2);
+            BigDecimal nthRoot = BigMath.sqrt(integer, context);
             assertEquals(
-                    nthRoot.pow(2).round(CONTEXT).stripTrailingZeros(),
-                    new BigDecimal(integer).round(CONTEXT).stripTrailingZeros()
+                    nthRoot.pow(2, context).toBigInteger(),
+                    integer
             );
             // BigDecimal version
             BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);
@@ -74,10 +77,11 @@ public class BigMathTest {
         for (int i = 0; i < TRIES; i++) {
             // BigInteger version
             BigInteger integer = getRandomBigInteger(random);
-            BigDecimal nthRoot = BigMath.cbrt(integer, CONTEXT);
+            MathContext context = getContextFor(integer, 3);
+            BigDecimal nthRoot = BigMath.cbrt(integer, context);
             assertEquals(
-                    nthRoot.pow(3).round(CONTEXT).stripTrailingZeros(),
-                    new BigDecimal(integer).round(CONTEXT).stripTrailingZeros()
+                    nthRoot.pow(3, context).toBigInteger(),
+                    integer
             );
             // BigDecimal version
             BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);
@@ -89,17 +93,18 @@ public class BigMathTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * NTH_ROOT_FACTOR)
     public void testNthRoot() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
             int n = 2 + random.nextInt(ROOT_BOUND - 2);
             // BigInteger version
             BigInteger integer = getRandomBigInteger(random);
-            BigDecimal nthRoot = BigMath.nthRoot(integer, n, CONTEXT);
+            MathContext context = getContextFor(integer, n);
+            BigDecimal nthRoot = BigMath.nthRoot(integer, n, context);
             assertEquals(
-                    nthRoot.pow(n, CONTEXT).stripTrailingZeros(),
-                    new BigDecimal(integer).round(CONTEXT).stripTrailingZeros()
+                    nthRoot.pow(n, context).toBigInteger(),
+                    integer
             );
             // BigDecimal version
             BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);

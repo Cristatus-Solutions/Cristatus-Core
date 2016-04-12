@@ -45,7 +45,7 @@ import static test.cristatus.core.TestUtils.getRandomBigDecimal;
  */
 public class RationalTest {
 
-    private static final int TRIES = 200;
+    private static final int TRIES = 100;
     private static final int POW_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
     private static final float FLT_TOLERANCE = 1E-6f;

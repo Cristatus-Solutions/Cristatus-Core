@@ -65,8 +65,7 @@ public class BigMath {
         int adjustment = n - newScale % n;
         newScale += adjustment;
         newScale /= n;
-        // Most of the time, the last digit differs... it's annoying
-        int precision = context.getPrecision() + adjustment + 1;
+        int precision = context.getPrecision() + adjustment;
         BigInteger padding = BigInteger.TEN.pow(precision * n + adjustment);
         value = value.multiply(padding);
         BigInteger eps = BigInteger.ONE;
