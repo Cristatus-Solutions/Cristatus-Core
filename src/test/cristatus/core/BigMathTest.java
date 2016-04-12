@@ -47,9 +47,11 @@ public class BigMathTest {
     private static final int TRIES = 10;
     private static final int ROOT_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
-    private static final int NTH_ROOT_FACTOR = 15_000;
+    private static final int SQRT_FACTOR = 50;
+    private static final int CBRT_FACTOR = 50;
+    private static final int NTH_ROOT_FACTOR = 30_000;
 
-    @Test
+    @Test(timeOut = TRIES * SQRT_FACTOR)
     public void testSquareRoot() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
@@ -71,7 +73,7 @@ public class BigMathTest {
         }
     }
 
-    @Test
+    @Test(timeOut = TRIES * CBRT_FACTOR)
     public void testCubeRoot() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
