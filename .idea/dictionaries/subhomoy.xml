@@ -2,6 +2,7 @@
   <dictionary name="subhomoy">
     <words>
       <w>cbrt</w>
+      <w>hypot</w>
       <w>lossless</w>
       <w>signum</w>
     </words>

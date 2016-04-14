@@ -44,12 +44,13 @@ import static test.cristatus.core.TestUtils.getRandomBigInteger;
  */
 public class BigMathTest {
 
-    private static final int TRIES = 10;
+    private static final int TRIES = 20;
     private static final int ROOT_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
     private static final int SQRT_FACTOR = 50;
     private static final int CBRT_FACTOR = 50;
     private static final int NTH_ROOT_FACTOR = 30_000;
+    private static final double DBL_TOLERANCE = 1E-15;
 
     @Test(timeOut = TRIES * SQRT_FACTOR)
     public void testSquareRoot() throws Exception {
@@ -114,6 +115,24 @@ public class BigMathTest {
             assertEquals(
                     nthRoot.pow(n, CONTEXT).stripTrailingZeros(),
                     decimal.stripTrailingZeros()
+            );
+        }
+    }
+
+    @Test
+    public void testHypotenuse() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            double x = random.nextDouble();
+            double y = random.nextDouble();
+            double h = Math.hypot(x, y);
+            BigDecimal decimalX = BigDecimal.valueOf(x);
+            BigDecimal decimalY = BigDecimal.valueOf(y);
+            assertEquals(
+                    BigMath.hypot(decimalX, decimalY, CONTEXT).doubleValue()
+                            / h,
+                    1,
+                    DBL_TOLERANCE
             );
         }
     }

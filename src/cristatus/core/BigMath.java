@@ -36,6 +36,11 @@ import java.math.MathContext;
 @SuppressWarnings("WeakerAccess")
 public class BigMath {
 
+    public static BigDecimal hypot(BigDecimal x, BigDecimal y,
+                                   MathContext context) {
+        return sqrt(x.pow(2).add(y.pow(2)), context);
+    }
+
     public static BigDecimal sqrt(BigInteger integer, MathContext context) {
         return nthRoot(integer, 2, context);
     }
