@@ -128,6 +128,11 @@ public class BigMathTest {
             BigDecimal decimalX = BigDecimal.valueOf(x);
             BigDecimal decimalY = BigDecimal.valueOf(y);
             assertEquals(
+                    BigMath.hypot(x, y, CONTEXT).doubleValue() / h,
+                    1,
+                    DBL_TOLERANCE
+            );
+            assertEquals(
                     BigMath.hypot(decimalX, decimalY, CONTEXT).doubleValue()
                             / h,
                     1,
