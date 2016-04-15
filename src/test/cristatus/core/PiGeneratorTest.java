@@ -25,7 +25,7 @@
 
 package test.cristatus.core;
 
-import cristatus.core.Pi;
+import cristatus.core.utils.PiGenerator;
 import org.testng.annotations.Test;
 
 import java.io.BufferedInputStream;
@@ -39,7 +39,7 @@ import static org.testng.Assert.assertEquals;
  * @author Subhomoy Haldar
  * @version 1.0
  */
-public class PiTest {
+public class PiGeneratorTest {
 
     private static final MathContext CONTEXT = new MathContext(2_000);
 
@@ -48,13 +48,13 @@ public class PiTest {
         int digits = CONTEXT.getPrecision() + 1;
         BigDecimal actualPi = new BigDecimal(readPiUpto(digits)).round(CONTEXT)
                 .stripTrailingZeros();
-        BigDecimal expectedPi = Pi.of(CONTEXT).toBigDecimal(CONTEXT);
+        BigDecimal expectedPi = PiGenerator.of(CONTEXT).toBigDecimal(CONTEXT);
         assertEquals(actualPi, expectedPi);
     }
 
     private static String readPiUpto(int digits) {
         try (BufferedInputStream stream = new BufferedInputStream(
-                PiTest.class.getResourceAsStream("pi1000000.txt")
+                PiGeneratorTest.class.getResourceAsStream("pi1000000.txt")
         )) {
             StringBuilder builder = new StringBuilder(digits + 1);
             for (int i = 0; i <= digits; i++) {

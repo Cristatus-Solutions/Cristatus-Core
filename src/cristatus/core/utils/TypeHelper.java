@@ -23,46 +23,31 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cristatus.core;
+package cristatus.core.utils;
 
-import java.math.BigInteger;
-import java.util.concurrent.RecursiveTask;
+import cristatus.core.Rational;
+
+import java.math.BigDecimal;
 
 /**
  * @author Subhomoy Haldar
  * @version 1.0
  */
-class SequentialMultiplier extends RecursiveTask<BigInteger> {
-    private BigInteger start;
-    private BigInteger end;
-
-    private static final BigInteger THRESHOLD = BigInteger.valueOf(10_000L);
-
-    SequentialMultiplier(final BigInteger start, final BigInteger end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    private BigInteger computeDirectly() {
-        BigInteger product = BigInteger.ONE;
-        while (start.compareTo(end) <= 0) {
-            product = product.multiply(start);
-            start = start.add(BigInteger.ONE);
+public class TypeHelper {
+    /**
+     * Helper method to check if a number is of a fractional type. Helps to
+     * make the code readable.
+     *
+     * @param number The number whose type to check.
+     * @return {@code true} if the number is a float, double or
+     * {@link BigDecimal}.
+     */
+    public static boolean isFractional(Number number) {
+        if (number instanceof Rational) {
+            Rational rational = (Rational) number;
+            return !rational.isInteger();
         }
-        return product;
-    }
-
-    @Override
-    protected BigInteger compute() {
-        if (end.subtract(start).compareTo(THRESHOLD) <= 0) {
-            return computeDirectly();
-        }
-        BigInteger mid = start.add(end).shiftRight(1);
-        SequentialMultiplier task1
-                = new SequentialMultiplier(start, mid.subtract(BigInteger.ONE));
-        SequentialMultiplier task2
-                = new SequentialMultiplier(mid, end);
-        task1.fork();
-        return task2.compute().multiply(task1.join());
+        return number instanceof Float || number instanceof Double
+                || number instanceof BigDecimal;
     }
 }

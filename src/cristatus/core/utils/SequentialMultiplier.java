@@ -23,19 +23,46 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cristatus.core;
+package cristatus.core.utils;
 
 import java.math.BigInteger;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
 
 /**
  * @author Subhomoy Haldar
  * @version 1.0
  */
-public class Factorial {
+class SequentialMultiplier extends RecursiveTask<BigInteger> {
+    private BigInteger start;
+    private BigInteger end;
 
-    public static BigInteger of(BigInteger number) {
-        ForkJoinPool pool = new ForkJoinPool();
-        return pool.invoke(new SequentialMultiplier(BigInteger.ONE, number));
+    private static final BigInteger THRESHOLD = BigInteger.valueOf(10_000L);
+
+    SequentialMultiplier(final BigInteger start, final BigInteger end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    private BigInteger computeDirectly() {
+        BigInteger product = BigInteger.ONE;
+        while (start.compareTo(end) <= 0) {
+            product = product.multiply(start);
+            start = start.add(BigInteger.ONE);
+        }
+        return product;
+    }
+
+    @Override
+    protected BigInteger compute() {
+        if (end.subtract(start).compareTo(THRESHOLD) <= 0) {
+            return computeDirectly();
+        }
+        BigInteger mid = start.add(end).shiftRight(1);
+        SequentialMultiplier task1
+                = new SequentialMultiplier(start, mid.subtract(BigInteger.ONE));
+        SequentialMultiplier task2
+                = new SequentialMultiplier(mid, end);
+        task1.fork();
+        return task2.compute().multiply(task1.join());
     }
 }

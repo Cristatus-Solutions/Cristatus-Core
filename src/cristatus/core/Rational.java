@@ -25,6 +25,9 @@
 
 package cristatus.core;
 
+import cristatus.core.utils.BigMath;
+import cristatus.core.utils.TypeHelper;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -240,24 +243,11 @@ public class Rational extends Number implements Comparable<Rational> {
             throw new IllegalArgumentException("Null numerator.");
         if (den == null)
             throw new IllegalArgumentException("Null denominator.");
-        if (isFractional(num) || isFractional(den)) {
+        if (TypeHelper.isFractional(num) || TypeHelper.isFractional(den)) {
             return getRationalFromFractions(num, den);
         } else {
             return getRationalFromIntegers(num, den);
         }
-    }
-
-    /**
-     * Helper method to check if a number is of a fractional type. Helps to
-     * make the code readable.
-     *
-     * @param number The number whose type to check.
-     * @return {@code true} if the number is a float, double or
-     * {@link BigDecimal}.
-     */
-    private static boolean isFractional(Number number) {
-        return number instanceof Float || number instanceof Double
-                || number instanceof BigDecimal;
     }
 
     /**
@@ -605,5 +595,10 @@ public class Rational extends Number implements Comparable<Rational> {
         return neg
                 ? getRationalFromFractions(d, n)
                 : getRationalFromFractions(n, d);
+    }
+
+    public boolean isInteger() {
+        return num.compareTo(den) >= 0 &&
+                (num.equals(den) || num.mod(den).equals(BigInteger.ZERO));
     }
 }

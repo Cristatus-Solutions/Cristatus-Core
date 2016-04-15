@@ -23,32 +23,36 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package test.cristatus.core;
-
-import cristatus.core.utils.Factorial;
-import org.testng.annotations.Test;
+package cristatus.core.utils;
 
 import java.math.BigInteger;
-
-import static org.testng.Assert.assertEquals;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @author Subhomoy Haldar
  * @version 1.0
  */
-public class FactorialTest {
+public class Factorial {
 
-    private static final String FACTORIAL_OF_100
-            = "93326215443944152681699238856266700490715968264381"
-            + "62146859296389521759999322991560894146397615651828"
-            + "6253697920827223758251185210916864000000000000000000000000";
+    private static final String FAIL_MESSAGE =
+            "The factorial function is only defined for non-negative integers.";
 
-    @Test
-    public void testFactorialOf() throws Exception {
-        assertEquals(
-                Factorial.of(BigInteger.valueOf(100)),
-                new BigInteger(FACTORIAL_OF_100)
-        );
+    public static BigInteger of(Number integer) throws ArithmeticException {
+        if (TypeHelper.isFractional(integer)) {
+            throw new ArithmeticException(FAIL_MESSAGE);
+        }
+        return of(BigMath.integerFrom(integer));
     }
 
+    public static BigInteger of(BigInteger number) throws ArithmeticException {
+        if (number.signum() < 0) {
+            throw new ArithmeticException(FAIL_MESSAGE);
+        }
+        return verified(number);
+    }
+
+    static BigInteger verified(BigInteger number) {
+        ForkJoinPool pool = new ForkJoinPool();
+        return pool.invoke(new SequentialMultiplier(BigInteger.ONE, number));
+    }
 }

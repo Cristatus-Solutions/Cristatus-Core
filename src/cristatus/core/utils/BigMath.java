@@ -23,7 +23,9 @@
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package cristatus.core;
+package cristatus.core.utils;
+
+import cristatus.core.Rational;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,30 +38,34 @@ import java.math.MathContext;
 @SuppressWarnings("WeakerAccess")
 public class BigMath {
 
+    public static BigDecimal hypot(Number x, Number y, MathContext context) {
+        return hypot(decimalFrom(x, context), decimalFrom(y, context), context);
+    }
+
     public static BigDecimal hypot(BigDecimal x, BigDecimal y,
                                    MathContext context) {
         return sqrt(x.pow(2).add(y.pow(2)), context);
     }
 
-    public static BigDecimal sqrt(BigInteger integer, MathContext context) {
-        return nthRoot(integer, 2, context);
+    public static BigDecimal sqrt(Number number, MathContext context) {
+        return nthRoot(decimalFrom(number, context), 2, context);
     }
 
     public static BigDecimal sqrt(BigDecimal decimal, MathContext context) {
         return nthRoot(decimal, 2, context);
     }
 
-    public static BigDecimal cbrt(BigInteger integer, MathContext context) {
-        return nthRoot(integer, 3, context);
+    public static BigDecimal cbrt(Number number, MathContext context) {
+        return nthRoot(decimalFrom(number, context), 3, context);
     }
 
     public static BigDecimal cbrt(BigDecimal decimal, MathContext context) {
         return nthRoot(decimal, 3, context);
     }
 
-    public static BigDecimal nthRoot(BigInteger integer, int n,
+    public static BigDecimal nthRoot(Number number, int n,
                                      MathContext context) {
-        return nthRoot(new BigDecimal(integer), n, context);
+        return nthRoot(decimalFrom(number, context), n, context);
     }
 
     public static BigDecimal nthRoot(BigDecimal decimal, int n,
@@ -92,4 +98,15 @@ public class BigMath {
         return guess;
     }
 
+    static BigDecimal decimalFrom(Number number, MathContext context) {
+        return (number instanceof Rational)
+                ? ((Rational) number).toBigDecimal(context)
+                : new BigDecimal(number.toString());
+    }
+
+    static BigInteger integerFrom(Number number) {
+        return (number instanceof Rational)
+                ? ((Rational) number).toBigInteger()
+                : new BigInteger(number.toString());
+    }
 }

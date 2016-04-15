@@ -25,7 +25,7 @@
 
 package test.cristatus.core;
 
-import cristatus.core.BigMath;
+import cristatus.core.utils.BigMath;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -49,7 +49,6 @@ public class BigMathTest {
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
     private static final int SQRT_FACTOR = 50;
     private static final int CBRT_FACTOR = 50;
-    private static final int NTH_ROOT_FACTOR = 30_000;
     private static final double DBL_TOLERANCE = 1E-15;
 
     @Test(timeOut = TRIES * SQRT_FACTOR)
@@ -96,7 +95,7 @@ public class BigMathTest {
         }
     }
 
-    @Test(timeOut = TRIES * NTH_ROOT_FACTOR)
+    @Test
     public void testNthRoot() throws Exception {
         Random random = new Random();
         for (int i = 0; i < TRIES; i++) {
