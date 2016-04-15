@@ -243,6 +243,11 @@ public class Rational extends Number implements Comparable<Rational> {
             throw new IllegalArgumentException("Null numerator.");
         if (den == null)
             throw new IllegalArgumentException("Null denominator.");
+        if (num instanceof Rational && den instanceof Rational) {
+            Rational n = (Rational) num;
+            Rational d = (Rational) den;
+            return n.divide(d);
+        }
         if (TypeHelper.isFractional(num) || TypeHelper.isFractional(den)) {
             return getRationalFromFractions(num, den);
         } else {
@@ -597,8 +602,13 @@ public class Rational extends Number implements Comparable<Rational> {
                 : getRationalFromFractions(n, d);
     }
 
+    /**
+     * This method returns true if this Rational encapsulates an integral
+     * value (i.e. with denominator as one).
+     *
+     * @return {@code true} If this Rational is an integer.
+     */
     public boolean isInteger() {
-        return num.compareTo(den) >= 0 &&
-                (num.equals(den) || num.mod(den).equals(BigInteger.ZERO));
+        return den.equals(BigInteger.ONE);
     }
 }
