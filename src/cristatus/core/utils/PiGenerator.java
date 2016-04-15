@@ -28,10 +28,10 @@ package cristatus.core.utils;
 import cristatus.core.Rational;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @author Subhomoy Haldar
@@ -40,10 +40,6 @@ import java.util.Map;
 public class PiGenerator {
 
     private static Map<MathContext, Rational> PI_CACHE = new HashMap<>(10);
-
-    private static final BigInteger _1103 = BigInteger.valueOf(1103);
-    private static final BigInteger _26390 = BigInteger.valueOf(26390);
-    private static final BigInteger _24591257856 = BigInteger.valueOf(396).pow(4);
 
     public static Rational of(MathContext context) {
         // Generation is expensive... use a cache
@@ -54,21 +50,8 @@ public class PiGenerator {
         BigDecimal root2times2 = BigMath.sqrt(8, context);
         Rational frontConstant = Rational.valueOf(root2times2, 9801);
 
-        BigInteger _26390k = BigInteger.ZERO;
-        BigInteger _24591257856pk = BigInteger.ONE;
-
-        Rational sum = Rational.ZERO;
-        for (int k = 0; k < iterations; k++) {
-            BigInteger num = Factorial.verified(BigInteger.valueOf(k << 2));
-            num = num.multiply(_1103.add(_26390k));
-            BigInteger den = Factorial.verified(BigInteger.valueOf(k)).pow(4);
-            den = den.multiply(_24591257856pk);
-
-            _26390k = _26390k.add(_26390);
-            _24591257856pk = _24591257856pk.multiply(_24591257856);
-
-            sum = sum.add(Rational.valueOf(num, den));
-        }
+        ForkJoinPool pool = new ForkJoinPool();
+        Rational sum = pool.invoke(new RamanujanAdder(0, iterations));
 
         // Add the generated value to cache, for reuse later
         Rational pi = (frontConstant.multiply(sum)).reciprocate();

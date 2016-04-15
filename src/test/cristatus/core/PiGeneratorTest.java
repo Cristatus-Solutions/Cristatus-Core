@@ -41,7 +41,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class PiGeneratorTest {
 
-    private static final MathContext CONTEXT = new MathContext(2_000);
+    private static final MathContext CONTEXT = new MathContext(5_000);
 
     @Test
     public void testApproximation() throws Exception {
@@ -49,6 +49,8 @@ public class PiGeneratorTest {
         BigDecimal actualPi = new BigDecimal(readPiUpto(digits)).round(CONTEXT)
                 .stripTrailingZeros();
         BigDecimal expectedPi = PiGenerator.of(CONTEXT).toBigDecimal(CONTEXT);
+        assertEquals(actualPi, expectedPi);
+        expectedPi = PiGenerator.of(CONTEXT).toBigDecimal(CONTEXT);
         assertEquals(actualPi, expectedPi);
     }
 

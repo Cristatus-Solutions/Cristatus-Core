@@ -25,47 +25,61 @@
 
 package cristatus.core.utils;
 
+import cristatus.core.Rational;
+
 import java.math.BigInteger;
 import java.util.concurrent.RecursiveTask;
 
 /**
- * This is a subclass of {@link RecursiveTask} that performs sequential
- * multiplications in parallel and thus providing a boost to performance.
- *
  * @author Subhomoy Haldar
  * @version 1.0
  */
-class SequentialMultiplier extends RecursiveTask<BigInteger> {
-    private BigInteger start;
-    private BigInteger end;
+class RamanujanAdder extends RecursiveTask<Rational> {
 
-    private static final BigInteger THRESHOLD = BigInteger.valueOf(10_000L);
+    private static final BigInteger _1103 = BigInteger.valueOf(1103);
+    private static final BigInteger _26390 = BigInteger.valueOf(26390);
+    private static final BigInteger _24591257856 = BigInteger.valueOf(396).pow(4);
 
-    SequentialMultiplier(final BigInteger start, final BigInteger end) {
+    private static final int THRESHOLD = 1_000;
+
+    private final int start;
+    private final int end;
+
+    RamanujanAdder(final int start, final int end) {
         this.start = start;
         this.end = end;
     }
 
-    private BigInteger computeDirectly() {
-        BigInteger product = BigInteger.ONE;
-        while (start.compareTo(end) <= 0) {
-            product = product.multiply(start);
-            start = start.add(BigInteger.ONE);
+    private Rational computeDirectly() {
+        BigInteger _26390k = BigInteger.ZERO;
+        BigInteger _24591257856pk = BigInteger.ONE;
+
+        Rational sum = Rational.ZERO;
+
+        for (int k = start; k < end; k++) {
+            BigInteger num = Factorial.verified(BigInteger.valueOf(k << 2));
+            num = num.multiply(_1103.add(_26390k));
+
+            BigInteger den = Factorial.verified(BigInteger.valueOf(k)).pow(4);
+            den = den.multiply(_24591257856pk);
+
+            _26390k = _26390k.add(_26390);
+            _24591257856pk = _24591257856pk.multiply(_24591257856);
+
+            sum = sum.add(Rational.valueOf(num, den));
         }
-        return product;
+        return sum;
     }
 
     @Override
-    protected BigInteger compute() {
-        if (end.subtract(start).compareTo(THRESHOLD) <= 0) {
+    protected Rational compute() {
+        if (end - start <= THRESHOLD) {
             return computeDirectly();
         }
-        BigInteger mid = start.add(end).shiftRight(1);
-        SequentialMultiplier task1
-                = new SequentialMultiplier(start, mid.subtract(BigInteger.ONE));
-        SequentialMultiplier task2
-                = new SequentialMultiplier(mid, end);
-        task1.fork();
-        return task2.compute().multiply(task1.join());
+        int mid = start + (end >>> 1);
+        RamanujanAdder adder1 = new RamanujanAdder(start, mid);
+        RamanujanAdder adder2 = new RamanujanAdder(mid, end);
+        adder1.fork();
+        return adder2.compute().add(adder1.join());
     }
 }
