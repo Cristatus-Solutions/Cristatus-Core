@@ -40,7 +40,7 @@ public class Pi {
     private static final BigInteger _24591257856 = BigInteger.valueOf(396).pow(4);
 
     public static Rational of(MathContext context) {
-        final int iterations = context.getPrecision() / 4;
+        final int iterations = context.getPrecision() / 7;
         BigDecimal root2times2 = BigMath.sqrt(BigInteger.valueOf(8), context);
         Rational frontConstant = Rational.valueOf(root2times2, 9801);
 
