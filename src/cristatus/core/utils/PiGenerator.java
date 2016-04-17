@@ -46,7 +46,9 @@ public class PiGenerator {
         if (PI_CACHE.containsKey(context)) {
             return PI_CACHE.get(context);
         }
-        final int iterations = context.getPrecision() / 7;
+        final int iterations
+                = (context.getPrecision() >>> 3)    // precision / 8
+                + (context.getPrecision() >>> 5);   // precision / 32
         BigDecimal root2times2 = BigMath.sqrt(8, context);
         Rational frontConstant = Rational.valueOf(root2times2, 9801);
 

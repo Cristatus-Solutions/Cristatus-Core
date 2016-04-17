@@ -41,7 +41,7 @@ import static org.testng.Assert.assertEquals;
  */
 public class PiGeneratorTest {
 
-    private static final MathContext CONTEXT = new MathContext(5_000);
+    private static final MathContext CONTEXT = new MathContext(10_000);
 
     @Test
     public void testApproximation() throws Exception {
