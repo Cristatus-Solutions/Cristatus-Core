@@ -40,7 +40,7 @@ class RamanujanAdder extends RecursiveTask<Rational> {
     private static final BigInteger _26390 = BigInteger.valueOf(26390);
     private static final BigInteger _24591257856 = BigInteger.valueOf(396).pow(4);
 
-    private static final int THRESHOLD = 2_000;
+    private static final int THRESHOLD = 5_000;
 
     private final int start;
     private final int end;
