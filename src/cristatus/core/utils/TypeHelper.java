@@ -30,6 +30,10 @@ import cristatus.core.Rational;
 import java.math.BigDecimal;
 
 /**
+ * This class contains several utility methods that help to determine the
+ * category of a {@link Number}, such as to test if it is fractional or
+ * integral. The main intent of this class is to make the code readable.
+ *
  * @author Subhomoy Haldar
  * @version 1.0
  */

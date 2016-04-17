@@ -41,7 +41,7 @@ public class PiGenerator {
 
     private static Map<MathContext, Rational> PI_CACHE = new HashMap<>(10);
 
-    public static Rational of(MathContext context) {
+    public static Rational generateRational(MathContext context) {
         // Generation is expensive... use a cache
         if (PI_CACHE.containsKey(context)) {
             return PI_CACHE.get(context);
