@@ -25,51 +25,164 @@
 
 package cristatus.core.utils;
 
-import cristatus.core.Rational;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 
+import static cristatus.core.utils.TypeHelper.*;
+
 /**
+ * The arbitrary-precision counterpart to {@link Math}, BigMath aims to
+ * provide all the commonly used functionality in java.lang.Math with
+ * arbitrary precision support.
+ * <p>
+ * It is advised to learn the use of a {@link MathContext} to help specify
+ * the precision of the calculations.
+ * <p>
+ * It is guaranteed that enough accuracy and relative precision is used such
+ * that if the inverse operation is applied to the result of applying an
+ * operation (for example, squaring the square-root of a number), the result
+ * will be equal to the original Number within the given context.
+ *
  * @author Subhomoy Haldar
  * @version 1.0
  */
 @SuppressWarnings("WeakerAccess")
 public class BigMath {
 
+    /**
+     * Returns the hypotenuse of the right-angled triangle constructed with
+     * the perpendicular sides of the given length.
+     * <p>
+     * This method is provided for the sake of shortening of code and ease of
+     * access.
+     *
+     * @param x       One side of the triangle.
+     * @param y       Another side of the triangle.
+     * @param context The precision for the calculations.
+     * @return The hypotenuse of the right-angled triangle constructed with
+     * the perpendicular sides of the given length.
+     */
     public static BigDecimal hypot(Number x, Number y, MathContext context) {
         return hypot(decimalFrom(x, context), decimalFrom(y, context), context);
     }
 
+    /**
+     * Returns the hypotenuse of the right-angled triangle constructed with
+     * the perpendicular sides of the given length.
+     *
+     * @param x       One side of the triangle.
+     * @param y       Another side of the triangle.
+     * @param context The precision for the calculations.
+     * @return The hypotenuse of the right-angled triangle constructed with
+     * the perpendicular sides of the given length.
+     */
     public static BigDecimal hypot(BigDecimal x, BigDecimal y,
                                    MathContext context) {
         return sqrt(x.pow(2).add(y.pow(2)), context);
     }
 
-    public static BigDecimal sqrt(Number number, MathContext context) {
+    /**
+     * This method calculates the square-root of the given number according
+     * to the given context.
+     * <p>
+     * This method is provided for the sake of shortening of code and ease of
+     * access.
+     *
+     * @param number  The number whose square-root is required.
+     * @param context The context for the calculations.
+     * @return The square-root of the given number according to the given
+     * context.
+     * @throws ArithmeticException If the argument is negative.
+     */
+    public static BigDecimal sqrt(Number number, MathContext context)
+            throws ArithmeticException {
         return nthRoot(decimalFrom(number, context), 2, context);
     }
 
-    public static BigDecimal sqrt(BigDecimal decimal, MathContext context) {
+    /**
+     * This method calculates the square-root of the given number according
+     * to the given context.
+     *
+     * @param decimal The number whose square-root is required.
+     * @param context The context for the calculations.
+     * @return The square-root of the given number according to the given
+     * context.
+     * @throws ArithmeticException If the argument is negative.
+     */
+    public static BigDecimal sqrt(BigDecimal decimal, MathContext context)
+            throws ArithmeticException {
         return nthRoot(decimal, 2, context);
     }
 
+    /**
+     * This method calculates the cube-root of the given number according
+     * to the given context.
+     * <p>
+     * This method is provided for the sake of shortening of code and ease of
+     * access.
+     *
+     * @param number  The number whose square-root is required.
+     * @param context The context for the calculations.
+     * @return The square-root of the given number according to the given
+     * context.
+     */
     public static BigDecimal cbrt(Number number, MathContext context) {
         return nthRoot(decimalFrom(number, context), 3, context);
     }
 
+    /**
+     * This method calculates the cube-root of the given number according
+     * to the given context.
+     *
+     * @param decimal The number whose square-root is required.
+     * @param context The context for the calculations.
+     * @return The square-root of the given number according to the given
+     * context.
+     */
     public static BigDecimal cbrt(BigDecimal decimal, MathContext context) {
         return nthRoot(decimal, 3, context);
     }
 
+    /**
+     * This method calculates the "nth-root" of the given number according
+     * to the given context.
+     * <p>
+     * This method is provided for the sake of shortening of code and ease of
+     * access.
+     *
+     * @param number  The number whose square-root is required.
+     * @param n       The required base for the root.
+     * @param context The context for the calculations.
+     * @return The square-root of the given number according to the given
+     * context.
+     * @throws ArithmeticException If the value of n is even and the argument
+     *                             is negative.
+     */
     public static BigDecimal nthRoot(Number number, int n,
-                                     MathContext context) {
+                                     MathContext context)
+            throws ArithmeticException {
         return nthRoot(decimalFrom(number, context), n, context);
     }
 
+    /**
+     * This method calculates the "nth-root" of the given number according
+     * to the given context.
+     *
+     * @param decimal The number whose square-root is required.
+     * @param n       The required base for the root.
+     * @param context The context for the calculations.
+     * @return The square-root of the given number according to the given
+     * context.
+     * @throws ArithmeticException If the value of n is even and the argument
+     *                             is negative.
+     */
     public static BigDecimal nthRoot(BigDecimal decimal, int n,
-                                     MathContext context) {
+                                     MathContext context)
+            throws ArithmeticException {
+        if (decimal.signum() < 0 && (n & 1) == 0) {
+            throw new ArithmeticException("Even root of negative number is not defined.");
+        }
         BigInteger value = decimal.unscaledValue();
         int newScale = decimal.scale();
         // Because the scale must be in the form of k*n, where k is an integer
@@ -83,6 +196,14 @@ public class BigMath {
         return new BigDecimal(newtonApproximate(value, eps, n), newScale + precision);
     }
 
+    /**
+     * Performs the Newton-Raphson approximation for calculating roots.
+     *
+     * @param raw The integer whose square root is to be approximated.
+     * @param eps The allowed tolerance.
+     * @param n   Which root to find out?
+     * @return The approximation for the nth root of the integer.
+     */
     private static BigInteger newtonApproximate(BigInteger raw,
                                                 BigInteger eps,
                                                 int n) {
@@ -98,15 +219,4 @@ public class BigMath {
         return guess;
     }
 
-    static BigDecimal decimalFrom(Number number, MathContext context) {
-        return (number instanceof Rational)
-                ? ((Rational) number).toBigDecimal(context)
-                : new BigDecimal(number.toString());
-    }
-
-    static BigInteger integerFrom(Number number) {
-        return (number instanceof Rational)
-                ? ((Rational) number).toBigInteger()
-                : new BigInteger(number.toString());
-    }
 }

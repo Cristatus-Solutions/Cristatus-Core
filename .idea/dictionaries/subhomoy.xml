@@ -4,6 +4,7 @@
       <w>cbrt</w>
       <w>hypot</w>
       <w>lossless</w>
+      <w>raphson</w>
       <w>signum</w>
     </words>
   </dictionary>

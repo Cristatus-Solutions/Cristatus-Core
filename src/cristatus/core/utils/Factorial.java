@@ -29,6 +29,9 @@ import java.math.BigInteger;
 import java.util.concurrent.ForkJoinPool;
 
 /**
+ * This class provides the functionality of calculating the factorial of
+ * non-negative integers in parallel, thereby boosting performance.
+ *
  * @author Subhomoy Haldar
  * @version 1.0
  */
@@ -37,13 +40,31 @@ public class Factorial {
     private static final String FAIL_MESSAGE =
             "The factorial function is only defined for non-negative integers.";
 
+    /**
+     * This method accepts any type of integer - int, long, and
+     * even Rationals encapsulating integers and returns the factorial of
+     * thai non-negative integer.
+     *
+     * @param integer The non-negative integer whose factorial to calculate.
+     * @return The factorial of the verified integer.
+     * @throws ArithmeticException If the number is not an integer or if it
+     *                             is negative.
+     */
     public static BigInteger of(Number integer) throws ArithmeticException {
         if (TypeHelper.isFractional(integer)) {
             throw new ArithmeticException(FAIL_MESSAGE);
         }
-        return of(BigMath.integerFrom(integer));
+        return of(TypeHelper.integerFrom(integer));
     }
 
+    /**
+     * This method returns the factorial of the the given BigInteger.
+     *
+     * @param number The non-negative integer whose factorial to calculate.
+     * @return The factorial of the verified integer.
+     * @throws ArithmeticException If the number is not an integer or if it
+     *                             is negative.
+     */
     public static BigInteger of(BigInteger number) throws ArithmeticException {
         if (number.signum() < 0) {
             throw new ArithmeticException(FAIL_MESSAGE);
@@ -51,6 +72,15 @@ public class Factorial {
         return verified(number);
     }
 
+    /**
+     * Control is delegated to this method after the verification has been
+     * done. This method invokes the {@link SequentialMultiplier} via a
+     * {@link ForkJoinPool}.
+     *
+     * @param number The  verified non-negative integer whose factorial to
+     *               calculate.
+     * @return The factorial of the verified integer.
+     */
     static BigInteger verified(BigInteger number) {
         ForkJoinPool pool = new ForkJoinPool();
         return pool.invoke(new SequentialMultiplier(BigInteger.ONE, number));

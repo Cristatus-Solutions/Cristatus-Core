@@ -28,11 +28,14 @@ package cristatus.core.utils;
 import cristatus.core.Rational;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 
 /**
  * This class contains several utility methods that help to determine the
  * category of a {@link Number}, such as to test if it is fractional or
- * integral. The main intent of this class is to make the code readable.
+ * integral, or to convert from one numeric type to another with least amount
+ * of code. The main intent of this class is to make the code readable.
  *
  * @author Subhomoy Haldar
  * @version 1.0
@@ -53,5 +56,40 @@ public class TypeHelper {
         }
         return number instanceof Float || number instanceof Double
                 || number instanceof BigDecimal;
+    }
+
+    /**
+     * This method takes any type of number and converts it to a
+     * {@link BigDecimal} with the desired accuracy (in case of a Rational).
+     *
+     * @param number  The number to be converted.
+     * @param context The required precision (for Rationals).
+     * @return The number as a {@link BigDecimal}.
+     */
+    static BigDecimal decimalFrom(Number number, MathContext context) {
+        if (number instanceof BigDecimal) {
+            return (BigDecimal) number;
+        }
+        return (number instanceof Rational)
+                ? ((Rational) number).toBigDecimal(context)
+                : new BigDecimal(number.toString());
+    }
+
+    /**
+     * This method takes any type of number and converts it into a
+     * {@link BigInteger}. In case of fractional numbers, the fractional part
+     * (after the decimal) is truncated. In other words, it performs integral
+     * division and returns the quotient, discarding the remainder.
+     *
+     * @param number The number to be converted.
+     * @return The number as {@link BigInteger}.
+     */
+    static BigInteger integerFrom(Number number) {
+        if (number instanceof BigInteger) {
+            return (BigInteger) number;
+        }
+        return (number instanceof Rational)
+                ? ((Rational) number).toBigInteger()
+                : new BigInteger(number.toString());
     }
 }
