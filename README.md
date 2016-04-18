@@ -1,8 +1,9 @@
 # Cristatus Core
-This repository has the standard classes used in all other Cristatus projects. This is currently a work in progress.
-There are lots of things to do:
+Cristatus Core is an arbitrary-precision numeric library written
+entirely in Java that supports lossless representation of numeric
+quantities.
 
-**For `Rational` and `BigMath`, I need to**
+## Currently under development
 
-1. write JavaDoc
-2. Add trigonometric methods, log, exp, etc.
+The idea behind it is to provide support for arbitrary precision
+mathematical calculations.
