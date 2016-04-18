@@ -112,7 +112,7 @@ public class BigMathTest {
             BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);
             nthRoot = BigMath.nthRoot(decimal, n, CONTEXT);
             assertEquals(
-                    nthRoot.pow(n, CONTEXT).stripTrailingZeros(),
+                    nthRoot.pow(n, CONTEXT).round(CONTEXT).stripTrailingZeros(),
                     decimal.stripTrailingZeros()
             );
         }
