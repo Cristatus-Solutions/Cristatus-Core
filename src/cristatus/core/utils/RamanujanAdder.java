@@ -31,25 +31,43 @@ import java.math.BigInteger;
 import java.util.concurrent.RecursiveTask;
 
 /**
+ * This is a subclass of {@link RecursiveTask} that performs the calculations
+ * that are key to the Ramanujan formula for generating the digits of &pi;.
+ *
  * @author Subhomoy Haldar
  * @version 1.0
  */
 class RamanujanAdder extends RecursiveTask<Rational> {
 
+    // Frequently used constants
     private static final BigInteger _1103 = BigInteger.valueOf(1103);
     private static final BigInteger _26390 = BigInteger.valueOf(26390);
-    private static final BigInteger _24591257856 = BigInteger.valueOf(396).pow(4);
+    private static final BigInteger _24591257856 = BigInteger.valueOf(24591257856L);
 
+    // If the difference between the limits is within the threshold, then the
+    // computation is carried out directly, instead of dividing it into two.
     private static final int THRESHOLD = 5_000;
 
-    private final int start;
-    private final int end;
+    private final int start;    // The inclusive lower limit
+    private final int end;      // The exclusive upper limit
 
+    /**
+     * Creates a new RamanujanAdder ready to be forked or invoked.
+     *
+     * @param start The inclusive lower limit.
+     * @param end   The exclusive lower limit.
+     */
     RamanujanAdder(final int start, final int end) {
         this.start = start;
         this.end = end;
     }
 
+    /**
+     * The difference between the limits is within the threshold; compute the
+     * sum directly.
+     *
+     * @return The sum for all values of k in the range: [start, end)
+     */
     private Rational computeDirectly() {
         BigInteger _26390k = _26390.multiply(BigInteger.valueOf(start));
         BigInteger _24591257856pk = _24591257856.pow(start);
@@ -71,6 +89,14 @@ class RamanujanAdder extends RecursiveTask<Rational> {
         return sum;
     }
 
+    /**
+     * This is the method that delegates control to the direct computation
+     * method if the threshold requirement is met, or subdivides the task
+     * into two separate tasks and executes them in parallel.
+     *
+     * @return The sum for all values of k in the range: [start, end),
+     * calculated in parallel.
+     */
     @Override
     protected Rational compute() {
         if (end - start <= THRESHOLD) {
