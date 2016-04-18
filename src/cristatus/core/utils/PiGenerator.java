@@ -34,17 +34,39 @@ import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
 /**
+ * This class acts as the access point for the &pi; approximation system.
+ * This class validates the argument and invokes parallel computation threads.
+ *
  * @author Subhomoy Haldar
  * @version 1.0
  */
 public class PiGenerator {
 
+    // The cache to store the computed value of pi, for reuse.
     private static Map<MathContext, Rational> PI_CACHE = new HashMap<>(10);
 
+    /**
+     * This method returns &pi; approximated to the desired precision. It
+     * implements the Ramanujan formula in parallel to generate more digits
+     * of the constant.
+     *
+     * @param context The {@link MathContext} to specify the precision of
+     *                calculation.
+     * @return &pi; with the desired precision.
+     */
     public static Rational generateRational(MathContext context) {
+        // No nulls please
+        if (context == null) {
+            throw new ArithmeticException("A non-null context is needed.");
+        }
         // Generation is expensive... use a cache
         if (PI_CACHE.containsKey(context)) {
             return PI_CACHE.get(context);
+        }
+        // Escape calculation altogether for under 16 digits of precision
+        if (context.getPrecision() <= MathContext.DECIMAL64.getPrecision()) {
+            BigDecimal pi = BigDecimal.valueOf(Math.PI).round(context);
+            return Rational.valueOf(pi);
         }
         final int iterations
                 = (context.getPrecision() >>> 3)    // precision / 8
@@ -55,8 +77,9 @@ public class PiGenerator {
         ForkJoinPool pool = new ForkJoinPool();
         Rational sum = pool.invoke(new RamanujanAdder(0, iterations));
 
-        // Add the generated value to cache, for reuse later
+        // Ramanujan's formula generates 1/pi
         Rational pi = (frontConstant.multiply(sum)).reciprocate();
+        // Add the generated value to cache, for reuse later
         PI_CACHE.put(context, pi);
         return pi;
     }
