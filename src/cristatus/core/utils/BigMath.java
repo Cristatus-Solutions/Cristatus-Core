@@ -209,7 +209,9 @@ public class BigMath {
                                                 int n) {
         int nM1 = n - 1;
         BigInteger N = BigInteger.valueOf(n);
+        // Make an initial guess equal to 2^(bit length of "raw")
         BigInteger guess = BigInteger.ONE.shiftLeft(raw.bitLength() / n);
+        // Delta is a measure of the deviation
         BigInteger delta;
         do {
             BigInteger powered = guess.pow(nM1);

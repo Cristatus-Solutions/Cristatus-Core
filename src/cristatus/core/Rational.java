@@ -311,8 +311,8 @@ public class Rational extends Number implements Comparable<Rational> {
      * @return The "corrected" Rational.
      * @throws IllegalArgumentException If the divisor is zero.
      */
-    private static Rational getCorrectedRational(BigInteger num,
-                                                 BigInteger den)
+    private static Rational getCorrectedRational(final BigInteger num,
+                                                 final BigInteger den)
             throws IllegalArgumentException {
         // Don't allow zero denominators
         if (den.signum() == 0)
@@ -323,8 +323,9 @@ public class Rational extends Number implements Comparable<Rational> {
 
         // Make sure the numerator carries the sign
         if (den.signum() < 0) {
-            num = num.negate();
-            den = den.negate();
+            BigInteger n = num.negate();
+            BigInteger d = den.negate();
+            return new Rational(n, d);
         }
         // The constructor will reduce the terms
         return new Rational(num, den);
