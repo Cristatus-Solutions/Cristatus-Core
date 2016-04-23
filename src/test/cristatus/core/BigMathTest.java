@@ -34,9 +34,7 @@ import java.math.MathContext;
 import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
-import static test.cristatus.core.TestUtils.getContextFor;
-import static test.cristatus.core.TestUtils.getRandomBigDecimal;
-import static test.cristatus.core.TestUtils.getRandomBigInteger;
+import static test.cristatus.core.TestUtils.*;
 
 /**
  * @author Subhomoy Haldar
@@ -44,12 +42,12 @@ import static test.cristatus.core.TestUtils.getRandomBigInteger;
  */
 public class BigMathTest {
 
-    private static final int TRIES = 20;
+    private static final int TRIES = 50;
     private static final int ROOT_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
     private static final int SQRT_FACTOR = 50;
     private static final int CBRT_FACTOR = 50;
-    private static final double DBL_TOLERANCE = 1E-15;
+    private static final double DBL_TOLERANCE = 1E-14;
 
     @Test(timeOut = TRIES * SQRT_FACTOR)
     public void testSquareRoot() throws Exception {
@@ -98,7 +96,8 @@ public class BigMathTest {
     @Test
     public void testNthRoot() throws Exception {
         Random random = new Random();
-        for (int i = 0; i < TRIES; i++) {
+        // because it is very time-consuming.
+        for (int i = 0; i < Math.sqrt(TRIES); i++) {
             int n = 2 + random.nextInt(ROOT_BOUND - 2);
             // BigInteger version
             BigInteger integer = getRandomBigInteger(random);

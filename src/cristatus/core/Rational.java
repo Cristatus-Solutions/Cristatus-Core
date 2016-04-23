@@ -77,6 +77,10 @@ public class Rational extends Number implements Comparable<Rational> {
      */
     public static final Rational ONE = new Rational(1, 1);
     /**
+     * The Rational object representing the number 2.
+     */
+    public static final Rational TWO = new Rational(2, 1);
+    /**
      * The Rational object representing the number 10.
      */
     public static final Rational TEN = new Rational(10, 1);

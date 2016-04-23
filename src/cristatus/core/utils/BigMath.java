@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 
-import static cristatus.core.utils.TypeHelper.*;
+import static cristatus.core.utils.TypeHelper.decimalFrom;
 
 /**
  * The arbitrary-precision counterpart to {@link Math}, BigMath aims to
@@ -63,7 +63,9 @@ public class BigMath {
      * @return The hypotenuse of the right-angled triangle constructed with
      * the perpendicular sides of the given length.
      */
-    public static BigDecimal hypot(Number x, Number y, MathContext context) {
+    public static BigDecimal hypot(final Number x,
+                                   final Number y,
+                                   final MathContext context) {
         return hypot(decimalFrom(x, context), decimalFrom(y, context), context);
     }
 
@@ -77,7 +79,8 @@ public class BigMath {
      * @return The hypotenuse of the right-angled triangle constructed with
      * the perpendicular sides of the given length.
      */
-    public static BigDecimal hypot(BigDecimal x, BigDecimal y,
+    public static BigDecimal hypot(final BigDecimal x,
+                                   final BigDecimal y,
                                    MathContext context) {
         return sqrt(x.pow(2).add(y.pow(2)), context);
     }
@@ -95,7 +98,8 @@ public class BigMath {
      * context.
      * @throws ArithmeticException If the argument is negative.
      */
-    public static BigDecimal sqrt(Number number, MathContext context)
+    public static BigDecimal sqrt(final Number number,
+                                  final MathContext context)
             throws ArithmeticException {
         return nthRoot(decimalFrom(number, context), 2, context);
     }
@@ -110,7 +114,8 @@ public class BigMath {
      * context.
      * @throws ArithmeticException If the argument is negative.
      */
-    public static BigDecimal sqrt(BigDecimal decimal, MathContext context)
+    public static BigDecimal sqrt(final BigDecimal decimal,
+                                  final MathContext context)
             throws ArithmeticException {
         return nthRoot(decimal, 2, context);
     }
@@ -127,7 +132,8 @@ public class BigMath {
      * @return The square-root of the given number according to the given
      * context.
      */
-    public static BigDecimal cbrt(Number number, MathContext context) {
+    public static BigDecimal cbrt(final Number number,
+                                  final MathContext context) {
         return nthRoot(decimalFrom(number, context), 3, context);
     }
 
@@ -140,7 +146,8 @@ public class BigMath {
      * @return The square-root of the given number according to the given
      * context.
      */
-    public static BigDecimal cbrt(BigDecimal decimal, MathContext context) {
+    public static BigDecimal cbrt(final BigDecimal decimal,
+                                  final MathContext context) {
         return nthRoot(decimal, 3, context);
     }
 
@@ -159,8 +166,9 @@ public class BigMath {
      * @throws ArithmeticException If the value of n is even and the argument
      *                             is negative.
      */
-    public static BigDecimal nthRoot(Number number, int n,
-                                     MathContext context)
+    public static BigDecimal nthRoot(final Number number,
+                                     final int n,
+                                     final MathContext context)
             throws ArithmeticException {
         return nthRoot(decimalFrom(number, context), n, context);
     }
@@ -177,8 +185,9 @@ public class BigMath {
      * @throws ArithmeticException If the value of n is even and the argument
      *                             is negative.
      */
-    public static BigDecimal nthRoot(BigDecimal decimal, int n,
-                                     MathContext context)
+    public static BigDecimal nthRoot(final BigDecimal decimal,
+                                     final int n,
+                                     final MathContext context)
             throws ArithmeticException {
         if (decimal.signum() < 0 && (n & 1) == 0) {
             throw new ArithmeticException("Even root of negative number is not defined.");
@@ -204,9 +213,9 @@ public class BigMath {
      * @param n   Which root to find out?
      * @return The approximation for the nth root of the integer.
      */
-    private static BigInteger newtonApproximate(BigInteger raw,
-                                                BigInteger eps,
-                                                int n) {
+    private static BigInteger newtonApproximate(final BigInteger raw,
+                                                final BigInteger eps,
+                                                final int n) {
         int nM1 = n - 1;
         BigInteger N = BigInteger.valueOf(n);
         // Make an initial guess equal to 2^(bit length of "raw")
