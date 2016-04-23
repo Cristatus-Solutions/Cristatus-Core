@@ -51,10 +51,10 @@ public class Factorial {
      *                             is negative.
      */
     public static BigInteger of(Number integer) throws ArithmeticException {
-        if (TypeHelper.isFractional(integer)) {
+        if (Helper.isFractional(integer)) {
             throw new ArithmeticException(FAIL_MESSAGE);
         }
-        return of(TypeHelper.integerFrom(integer));
+        return of(Helper.integerFrom(integer));
     }
 
     /**

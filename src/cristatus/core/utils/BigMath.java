@@ -29,7 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 
-import static cristatus.core.utils.TypeHelper.decimalFrom;
+import static cristatus.core.utils.Helper.decimalFrom;
 
 /**
  * The arbitrary-precision counterpart to {@link Math}, BigMath aims to

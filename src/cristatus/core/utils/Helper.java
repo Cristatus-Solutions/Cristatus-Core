@@ -40,7 +40,7 @@ import java.math.MathContext;
  * @author Subhomoy Haldar
  * @version 1.0
  */
-public class TypeHelper {
+public class Helper {
     /**
      * Helper method to check if a number is of a fractional type. Helps to
      * make the code readable.
@@ -91,5 +91,10 @@ public class TypeHelper {
         return (number instanceof Rational)
                 ? ((Rational) number).toBigInteger()
                 : new BigInteger(number.toString());
+    }
+
+    public static MathContext expandContext(MathContext context, int delta) {
+        int newPrecision = context.getPrecision() + delta;
+        return new MathContext(newPrecision, context.getRoundingMode());
     }
 }

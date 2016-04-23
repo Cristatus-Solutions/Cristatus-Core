@@ -26,7 +26,7 @@
 package cristatus.core;
 
 import cristatus.core.utils.BigMath;
-import cristatus.core.utils.TypeHelper;
+import cristatus.core.utils.Helper;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -64,7 +64,7 @@ import java.util.Objects;
  * @see #valueOf(Number, Number) The double argument valueOf() method.
  */
 @SuppressWarnings("WeakerAccess")
-public class Rational extends Number implements Comparable<Rational> {
+public class Rational extends Real implements Comparable<Rational> {
 
     // "psf" constants
 
@@ -252,7 +252,7 @@ public class Rational extends Number implements Comparable<Rational> {
             Rational d = (Rational) den;
             return n.divide(d);
         }
-        if (TypeHelper.isFractional(num) || TypeHelper.isFractional(den)) {
+        if (Helper.isFractional(num) || Helper.isFractional(den)) {
             return getRationalFromFractions(num, den);
         } else {
             return getRationalFromIntegers(num, den);
@@ -345,6 +345,7 @@ public class Rational extends Number implements Comparable<Rational> {
      * @return A {@link BigDecimal} of the desired accuracy having the same
      * value as this Rational.
      */
+    @Override
     public BigDecimal toBigDecimal(MathContext context) {
         return new BigDecimal(num)
                 .divide(new BigDecimal(den), context)
@@ -436,7 +437,7 @@ public class Rational extends Number implements Comparable<Rational> {
      */
     @Override
     public String toString() {
-        return num + "/" + den;
+        return num + (den.equals(BigInteger.ONE) ? "" : "/" + den);
     }
 
     // From Comparable: compareTo...
@@ -507,8 +508,12 @@ public class Rational extends Number implements Comparable<Rational> {
      * multiplicative identity). It is represented as 1/x.
      *
      * @return The multiplicative inverse or reciprocal of this Rational.
+     * @throws ArithmeticException If the current {@link Rational} is 0.
      */
-    public Rational reciprocate() {
+    public Rational reciprocate() throws ArithmeticException {
+        if (signum() == 0) {
+            throw new ArithmeticException("Zero denominator.");
+        }
         return new Rational(den, num);
     }
 

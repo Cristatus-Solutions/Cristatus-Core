@@ -307,6 +307,7 @@ public class RationalTest {
     public void testConstants() throws Exception {
         assertEquals(Rational.ZERO, Rational.valueOf(0, 100));
         assertEquals(Rational.ONE, Rational.valueOf(Math.PI, Math.PI));
+        assertEquals(Rational.TWO, Rational.valueOf(Math.floor(Math.E)));
         assertEquals(Rational.TEN, Rational.valueOf(50, 5));
         assertEquals(Rational.HALF, Rational.valueOf(12, 24.0));
         assertEquals(Rational.QUARTER, Rational.valueOf(15.0, 60));
