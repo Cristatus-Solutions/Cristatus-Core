@@ -338,6 +338,17 @@ public class Rational extends Real implements Comparable<Rational> {
     // Methods from Number.java and extras
 
     /**
+     * Returns the value of this Rational approximated as a Rational, i.e.
+     * this object itself.
+     *
+     * @param context The (ignored) {@link MathContext}.
+     * @return This Rational.
+     */
+    public Rational toRational(MathContext context) {
+        return this;
+    }
+
+    /**
      * This method returns a BigDecimal with the given accuracy encapsulated
      * in the context.
      *
@@ -552,6 +563,27 @@ public class Rational extends Real implements Comparable<Rational> {
     }
 
     /**
+     * This method raises this Rational to the given integral power and returns
+     * the result.
+     * <p>
+     * This method does not require a {@link MathContext} for specifying the
+     * precision because this operation is lossless.
+     *
+     * @param power The integral power to raise this Rational to. It may be
+     *              negative.
+     * @return This Rational raised to the given power.
+     */
+    public Rational pow(int power) {
+        boolean neg = power < 0;
+        BigInteger n = num;
+        BigInteger d = den;
+        if (neg) power = -power;
+        n = n.pow(power);
+        d = d.pow(power);
+        return neg ? new Rational(d, n) : new Rational(n, d);
+    }
+
+    /**
      * This method raises this Rational to the given power and returns the
      * result.
      * <p>
@@ -560,7 +592,8 @@ public class Rational extends Real implements Comparable<Rational> {
      * {@link Math#pow(double, double) Math.pow()} function.
      * <p>
      * The MathContext is needed to specify the accuracy requirement for
-     * non-integral powers. In case of integral powers, it may be kept <code>null</code>.
+     * non-integral powers. In case of integral powers, it may be kept
+     * <code>null</code>, but it is recommended to use the other method.
      *
      * @param power   The power to raise this Rational to.
      * @param context The context to specify the precision in case of
@@ -570,7 +603,7 @@ public class Rational extends Real implements Comparable<Rational> {
      */
     public Rational pow(Rational power, MathContext context)
             throws ArithmeticException {
-        if (signum() < 0 && (power.intValue() & 1) != 1) {
+        if (signum() < 0 && (power.den.intValueExact() & 1) != 1) {
             throw new ArithmeticException("Real principal root doesn't exist.");
         }
         int pow = power.num.intValueExact();

@@ -88,6 +88,10 @@ public class SimpleSurd extends Real {
         return num.divide(den, Helper.expandContext(context, root));
     }
 
+    public Rational toRational(MathContext context) {
+        return value.pow(Rational.valueOf(1, root), context);
+    }
+
     @Override
     public String toString() {
         return "(" + value + ")^(1/" + root + ")";

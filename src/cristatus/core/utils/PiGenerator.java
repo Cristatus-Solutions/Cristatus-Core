@@ -54,7 +54,7 @@ public class PiGenerator {
      *                calculation.
      * @return &pi; with the desired precision.
      */
-    public static Rational generateRational(MathContext context) {
+    public static Rational obtainRational(MathContext context) {
         // No nulls please
         if (context == null) {
             throw new ArithmeticException("A non-null context is needed.");

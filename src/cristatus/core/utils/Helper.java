@@ -93,6 +93,14 @@ public class Helper {
                 : new BigInteger(number.toString());
     }
 
+    /**
+     * This method is useful when required to extend the precision of a
+     * calculation to have some guard digits to help preserve accuracy.
+     *
+     * @param context The {@link MathContext} to expand from.
+     * @param delta   The number of guard digits to add.
+     * @return The expanded {@link MathContext}.
+     */
     public static MathContext expandContext(MathContext context, int delta) {
         int newPrecision = context.getPrecision() + delta;
         return new MathContext(newPrecision, context.getRoundingMode());

@@ -33,9 +33,11 @@ import java.math.MathContext;
  * @author Subhomoy Haldar
  * @version 1.0
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class Real extends Number {
     public abstract BigDecimal toBigDecimal(MathContext context);
 
     public abstract BigInteger toBigInteger();
 
+    public abstract Rational toRational(MathContext context);
 }

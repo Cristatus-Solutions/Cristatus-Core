@@ -48,9 +48,9 @@ public class PiGeneratorTest {
         int digits = CONTEXT.getPrecision() + 1;
         BigDecimal actualPi = new BigDecimal(readPiUpto(digits)).round(CONTEXT)
                 .stripTrailingZeros();
-        BigDecimal expectedPi = PiGenerator.generateRational(CONTEXT).toBigDecimal(CONTEXT);
+        BigDecimal expectedPi = PiGenerator.obtainRational(CONTEXT).toBigDecimal(CONTEXT);
         assertEquals(actualPi, expectedPi);
-        expectedPi = PiGenerator.generateRational(CONTEXT).toBigDecimal(CONTEXT);
+        expectedPi = PiGenerator.obtainRational(CONTEXT).toBigDecimal(CONTEXT);
         assertEquals(actualPi, expectedPi);
     }
 

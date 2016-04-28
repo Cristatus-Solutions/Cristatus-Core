@@ -386,7 +386,7 @@ public class RationalTest {
             int power = random.nextInt(POW_BOUND);
             BigDecimal decimal = getRandomBigDecimal(random, CONTEXT);
             Rational rational = Rational.valueOf(decimal);
-            rational = rational.pow(Rational.valueOf(power), null);
+            rational = rational.pow(power);
             assertEquals(
                     rational.toBigDecimal(CONTEXT),
                     decimal.pow(power).round(CONTEXT).stripTrailingZeros()
