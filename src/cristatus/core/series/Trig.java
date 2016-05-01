@@ -39,7 +39,7 @@ import java.math.MathContext;
  */
 public class Trig {
 
-    private static Rational sinSeries(Rational angle, MathContext context) {
+    public static Rational sinSeries(Rational angle, MathContext context) {
         Rational sum = Rational.ZERO;
         Rational partial = Rational.ONE;
         boolean negative = false;
@@ -56,7 +56,7 @@ public class Trig {
         return sum;
     }
 
-    private static Rational cosSeries(Rational angle, MathContext context) {
+    public static Rational cosSeries(Rational angle, MathContext context) {
         Rational sum = Rational.ZERO;
         Rational partial = Rational.ONE;
         boolean negative = false;

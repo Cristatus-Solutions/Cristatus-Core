@@ -577,9 +577,9 @@ public class Rational extends Real implements Comparable<Rational> {
         boolean neg = power < 0;
         BigInteger n = num;
         BigInteger d = den;
-        if (neg) power = -power;
-        n = n.pow(power);
-        d = d.pow(power);
+        int abs = neg ? -power : power;
+        n = n.pow(abs);
+        d = d.pow(abs);
         return neg ? new Rational(d, n) : new Rational(n, d);
     }
 
@@ -654,8 +654,9 @@ public class Rational extends Real implements Comparable<Rational> {
      * @return A new Rational with the desired precision.
      */
     public Rational dropTo(MathContext context) {
-        BigInteger n = new BigDecimal(num).round(context).toBigInteger();
-        BigInteger d = new BigDecimal(den).round(context).toBigInteger();
+        MathContext context2 = Helper.expandContext(context, 2);
+        BigInteger n = new BigDecimal(num).round(context2).toBigInteger();
+        BigInteger d = new BigDecimal(den).round(context2).toBigInteger();
         return Rational.valueOf(n, d);
     }
 

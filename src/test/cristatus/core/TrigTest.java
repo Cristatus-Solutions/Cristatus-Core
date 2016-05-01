@@ -25,13 +25,12 @@
 
 package test.cristatus.core;
 
-import cristatus.core.utils.PiGenerator;
+import cristatus.core.Rational;
+import cristatus.core.series.Trig;
 import org.testng.annotations.Test;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
 
@@ -39,33 +38,29 @@ import static org.testng.Assert.assertEquals;
  * @author Subhomoy Haldar
  * @version 1.0
  */
-public class PiGeneratorTest {
+public class TrigTest {
 
-    private static final MathContext CONTEXT = new MathContext(10_000);
+    private static final int TRIES = 1_000;
+    private static final MathContext CONTEXT = MathContext.DECIMAL64;
+
+    private static final double DBL_TOLERANCE = 1e-15;
 
     @Test
-    public void testApproximation() throws Exception {
-        int digits = CONTEXT.getPrecision() + 1;
-        BigDecimal actualPi = new BigDecimal(readPiUpto(digits)).round(CONTEXT)
-                .stripTrailingZeros();
-        BigDecimal expectedPi = PiGenerator.obtainRational(CONTEXT).toBigDecimal(CONTEXT);
-        assertEquals(actualPi, expectedPi);
-        expectedPi = PiGenerator.obtainRational(CONTEXT).toBigDecimal(CONTEXT);
-        assertEquals(actualPi, expectedPi);
-    }
-
-    private static String readPiUpto(int digits) {
-        try (BufferedInputStream stream = new BufferedInputStream(
-                PiGeneratorTest.class.getResourceAsStream("pi1000000.txt")
-        )) {
-            StringBuilder builder = new StringBuilder(digits + 1);
-            for (int i = 0; i <= digits; i++) {
-                builder.append((char) stream.read());
-            }
-            return builder.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void testSeries() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            double d = random.nextDouble() * Math.PI / 4;
+            Rational angle = Rational.valueOf(d);
+            Rational sin = Trig.sinSeries(angle, CONTEXT);
+            Rational cos = Trig.cosSeries(angle, CONTEXT);
+            Rational tan = sin.divide(cos).dropTo(CONTEXT);
+            assertEquals(Math.sin(d) / sin.doubleValue(), 1, DBL_TOLERANCE);
+            assertEquals(Math.cos(d) / cos.doubleValue(), 1, DBL_TOLERANCE);
+            assertEquals(Math.tan(d) / tan.doubleValue(), 1, DBL_TOLERANCE);
+            assertEquals(
+                    sin.pow(2).add(cos.pow(2)).dropTo(CONTEXT),
+                    Rational.ONE
+            );
         }
-        return "";
     }
 }

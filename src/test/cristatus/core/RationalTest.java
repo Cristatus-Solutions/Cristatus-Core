@@ -45,7 +45,7 @@ import static test.cristatus.core.TestUtils.getRandomBigDecimal;
  */
 public class RationalTest {
 
-    private static final int TRIES = 100;
+    private static final int TRIES = 200;
     private static final int POW_BOUND = 100;
     private static final MathContext CONTEXT = MathContext.DECIMAL128;
     private static final float FLT_TOLERANCE = 1E-6f;
@@ -390,6 +390,20 @@ public class RationalTest {
             assertEquals(
                     rational.toBigDecimal(CONTEXT),
                     decimal.pow(power).round(CONTEXT).stripTrailingZeros()
+            );
+        }
+    }
+
+    @Test
+    public void testDropToContext() throws Exception {
+        Random random = new Random();
+        for (int i = 0; i < TRIES; i++) {
+            BigDecimal decimal1 = getRandomBigDecimal(random, CONTEXT);
+            BigDecimal decimal2 = getRandomBigDecimal(random, CONTEXT);
+            Rational rational = Rational.valueOf(decimal1, decimal2);
+            assertEquals(
+                    decimal1.divide(decimal2, CONTEXT).stripTrailingZeros(),
+                    rational.dropTo(CONTEXT).toBigDecimal(CONTEXT)
             );
         }
     }
