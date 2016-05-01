@@ -58,19 +58,13 @@ public class ExpTest {
 
             Rational val = Rational.valueOf(decimal);
 
-            System.out.println(decimal);
-
             Rational exp1 = Exp.expSeries(val, CONTEXT);
             Rational log1 = Exp.logSeries(exp1, CONTEXT);
             assertEquals(log1.toBigDecimal(CONTEXT), decimal);
 
-            System.out.println("Done 1 : " + i);
-
             Rational log2 = Exp.logSeries(val, CONTEXT);
             Rational exp2 = Exp.expSeries(log2, CONTEXT);
             assertEquals(exp2.toBigDecimal(CONTEXT), decimal);
-
-            System.out.println("Done 2 : " + i);
         }
     }
 

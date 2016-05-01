@@ -36,6 +36,15 @@ import java.math.MathContext;
  */
 public class Exp {
 
+    /**
+     * Calculates an approximation to e<sup>x</sup> for the given precision.
+     * It warrants great performance for fractional arguments. For larger
+     * arguments, a better technique is needed.
+     *
+     * @param term    The fractional argument.
+     * @param context The required precision.
+     * @return The required exponentiated value.
+     */
     public static Rational expSeries(Rational term, MathContext context) {
         Rational sum = Rational.ZERO;
         Rational partial = Rational.ONE;
@@ -52,18 +61,25 @@ public class Exp {
         return sum.dropTo(context);
     }
 
+    /**
+     * Calculates the natural logarithm of the given argument with the given
+     * precision.
+     *
+     * @param term    The number whose logarithm to calculate.
+     * @param context The desired precision.
+     * @return The natural logarithm of the number.
+     */
     public static Rational logSeries(Rational term, MathContext context) {
         int limit = context.getPrecision() << 2;
         MathContext workContext = Helper.expandContext(context, limit);
 
         Rational part = Rational.ONE.subtract(Rational.valueOf(
                 2, term.add(Rational.ONE)
-        ));
+        )).dropTo(workContext);
 
         Rational sum = Rational.ZERO;
         Rational partial = part;
         part = part.pow(2);
-
 
         for (int i = 0; i < limit; i++) {
             sum = sum.add(partial.divide(Rational.valueOf((i << 1) + 1)));

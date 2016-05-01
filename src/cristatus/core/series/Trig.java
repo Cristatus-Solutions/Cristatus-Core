@@ -26,6 +26,7 @@
 package cristatus.core.series;
 
 import cristatus.core.Rational;
+import cristatus.core.utils.Helper;
 
 import java.math.MathContext;
 
@@ -89,5 +90,24 @@ public class Trig {
             partial = partial.multiply(Rational.valueOf(angle, i));
         }
         return sum;
+    }
+
+    // Accurate upto <= 2-sqrt(3)
+    public static Rational atanSeries(Rational term, MathContext context) {
+        Rational sum = Rational.ZERO;
+        Rational partial = term;
+        Rational square = term.pow(2).negate();
+
+        int limit = (int) (context.getPrecision() * 1.5);
+        MathContext workContext = Helper.expandContext(context, limit);
+
+        for (int i = 0; i < limit; i++) {
+            sum = sum.add(partial.divide(Rational.valueOf((i << 1) + 1)));
+            sum = sum.dropTo(workContext);
+
+            partial = partial.multiply(square);
+        }
+
+        return sum.dropTo(workContext);
     }
 }
