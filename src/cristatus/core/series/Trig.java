@@ -39,6 +39,15 @@ import java.math.MathContext;
  */
 public class Trig {
 
+    /**
+     * Calculates an approximation for the sine of the given angle in radians
+     * using the standard series, provided the angle is less than or equal to
+     * &pi;/4.
+     *
+     * @param angle   The angle in radians (&leq; &pi;/4).
+     * @param context The required precision.
+     * @return An approximation of the sine of the angle.
+     */
     public static Rational sinSeries(Rational angle, MathContext context) {
         Rational sum = Rational.ZERO;
         Rational partial = Rational.ONE;
@@ -56,12 +65,22 @@ public class Trig {
         return sum;
     }
 
+    /**
+     * Calculates an approximation for the cosine of the given angle in radians
+     * using the standard series, provided the angle is less than or equal to
+     * &pi;/4.
+     *
+     * @param angle   The angle in radians (&leq; &pi;/4).
+     * @param context The required precision.
+     * @return An approximation of the cosine of the angle.
+     */
     public static Rational cosSeries(Rational angle, MathContext context) {
         Rational sum = Rational.ZERO;
         Rational partial = Rational.ONE;
         boolean negative = false;
 
         int limit = (int) (context.getPrecision() * 1.5);
+
         for (int i = 1; i <= limit; i++) {
             if ((i & 1) == 1) {
                 sum = sum.add(negative ? partial.negate() : partial);
