@@ -28,6 +28,7 @@ package cristatus.core.utils;
 import cristatus.core.Rational;
 
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.concurrent.RecursiveTask;
 
 /**
@@ -51,15 +52,18 @@ class RamanujanAdder extends RecursiveTask<Rational> {
     private final int start;    // The inclusive lower limit
     private final int end;      // The exclusive upper limit
 
+    private final MathContext context;
+
     /**
      * Creates a new RamanujanAdder ready to be forked or invoked.
      *
      * @param start The inclusive lower limit.
      * @param end   The exclusive lower limit.
      */
-    RamanujanAdder(final int start, final int end) {
+    RamanujanAdder(final int start, final int end, final MathContext context) {
         this.start = start;
         this.end = end;
+        this.context = context;
     }
 
     /**
@@ -84,7 +88,8 @@ class RamanujanAdder extends RecursiveTask<Rational> {
             _26390k = _26390k.add(_26390);
             _24591257856pk = _24591257856pk.multiply(_24591257856);
 
-            sum = sum.add(Rational.valueOf(num, den));
+            sum = sum.add(Rational.valueOf(num, den).dropTo(context));
+            sum = sum.dropTo(context);
         }
         return sum;
     }
@@ -103,8 +108,8 @@ class RamanujanAdder extends RecursiveTask<Rational> {
             return computeDirectly();
         }
         int mid = start + (end >>> 1);
-        RamanujanAdder adder1 = new RamanujanAdder(start, mid);
-        RamanujanAdder adder2 = new RamanujanAdder(mid, end);
+        RamanujanAdder adder1 = new RamanujanAdder(start, mid, context);
+        RamanujanAdder adder2 = new RamanujanAdder(mid, end, context);
         adder1.fork();
         return adder2.compute().add(adder1.join());
     }

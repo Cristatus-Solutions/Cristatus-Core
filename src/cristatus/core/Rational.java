@@ -247,9 +247,9 @@ public class Rational extends Real implements Comparable<Rational> {
             throw new IllegalArgumentException("Null numerator.");
         if (den == null)
             throw new IllegalArgumentException("Null denominator.");
-        if (num instanceof Rational && den instanceof Rational) {
-            Rational n = (Rational) num;
-            Rational d = (Rational) den;
+        if (num instanceof Rational || den instanceof Rational) {
+            Rational n = Rational.valueOf(num);
+            Rational d = Rational.valueOf(den);
             return n.divide(d);
         }
         if (Helper.isFractional(num) || Helper.isFractional(den)) {
@@ -643,6 +643,20 @@ public class Rational extends Real implements Comparable<Rational> {
         return neg
                 ? getRationalFromFractions(d, n)
                 : getRationalFromFractions(n, d);
+    }
+
+    /**
+     * Creates a new Rational that retains the desired accuracy but is
+     * rounded down to the desired precision. If the required precision exceeds
+     * the current, no effective change occurs.
+     *
+     * @param context The desired precision for rounding.
+     * @return A new Rational with the desired precision.
+     */
+    public Rational dropTo(MathContext context) {
+        BigInteger n = new BigDecimal(num).round(context).toBigInteger();
+        BigInteger d = new BigDecimal(den).round(context).toBigInteger();
+        return Rational.valueOf(n, d);
     }
 
     /**

@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 
 import static cristatus.core.utils.Helper.decimalFrom;
+import static cristatus.core.utils.Helper.expandContext;
 
 /**
  * The arbitrary-precision counterpart to {@link Math}, BigMath aims to
@@ -198,7 +199,7 @@ public class BigMath {
         int adjustment = n - newScale % n;
         newScale += adjustment;
         newScale /= n;
-        int precision = context.getPrecision() + adjustment;
+        int precision = expandContext(context, 2).getPrecision() + adjustment;
         BigInteger padding = BigInteger.TEN.pow(precision * n + adjustment);
         value = value.multiply(padding);
         BigInteger eps = BigInteger.ONE;

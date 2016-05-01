@@ -75,7 +75,10 @@ public class PiGenerator {
         Rational frontConstant = Rational.valueOf(root2times2, 9801);
 
         ForkJoinPool pool = new ForkJoinPool();
-        Rational sum = pool.invoke(new RamanujanAdder(0, iterations));
+        MathContext newContext = Helper.expandContext(
+                context, context.getPrecision() << 1
+        );
+        Rational sum = pool.invoke(new RamanujanAdder(0, iterations, newContext));
 
         // Ramanujan's formula generates 1/pi
         Rational pi = (frontConstant.multiply(sum)).reciprocate();
