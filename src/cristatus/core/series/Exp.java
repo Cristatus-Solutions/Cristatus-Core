@@ -73,9 +73,10 @@ public class Exp {
         int limit = context.getPrecision() << 2;
         MathContext workContext = Helper.expandContext(context, limit);
 
-        Rational part = Rational.ONE.subtract(Rational.valueOf(
-                2, term.add(Rational.ONE)
-        )).dropTo(workContext);
+        Rational part = Rational.valueOf(
+                term.subtract(Rational.ONE),
+                term.add(Rational.ONE)
+        ).dropTo(workContext);
 
         Rational sum = Rational.ZERO;
         Rational partial = part;

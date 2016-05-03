@@ -480,9 +480,23 @@ public class Rational extends Real implements Comparable<Rational> {
      * @return The sum of this Rational and the given one.
      */
     public Rational add(Rational term) {
-        BigInteger n1 = this.num.multiply(term.den);
-        BigInteger n2 = term.num.multiply(this.den);
-        return new Rational(n1.add(n2), this.den.multiply(term.den));
+        BigInteger n1 = num;
+        BigInteger d1 = den;
+        BigInteger n2 = term.num;
+        BigInteger d2 = term.den;
+
+        BigInteger g = d1.gcd(d2);
+        BigInteger n, d;
+        if (g.equals(BigInteger.ONE)) { // Knuth claims it occurs 60% of the time
+            d = d1.multiply(d2);
+            n = n1.multiply(d2).add(n2.multiply(d1));
+        } else {
+            BigInteger div1 = d1.divide(g);
+            BigInteger div2 = d2.divide(g);
+            d = div1.multiply(d2);
+            n = n1.multiply(div2).add(n2.multiply(div1));
+        }
+        return new Rational(n, d);
     }
 
     /**
@@ -493,9 +507,7 @@ public class Rational extends Real implements Comparable<Rational> {
      * @return The difference of this Rational and the given one.
      */
     public Rational subtract(Rational term) {
-        BigInteger n1 = this.num.multiply(term.den);
-        BigInteger n2 = term.num.multiply(this.den);
-        return new Rational(n1.subtract(n2), this.den.multiply(term.den));
+        return add(term.negate());
     }
 
     /**
@@ -536,7 +548,20 @@ public class Rational extends Real implements Comparable<Rational> {
      * @return The product of this Rational and the given one.
      */
     public Rational multiply(Rational term) {
-        return new Rational(num.multiply(term.num), den.multiply(term.den));
+        BigInteger n1 = num;
+        BigInteger d1 = den;
+        BigInteger n2 = term.num;
+        BigInteger d2 = term.den;
+
+        BigInteger g1 = n1.gcd(d2);
+        BigInteger g2 = d1.gcd(n2);
+
+        n1 = n1.divide(g1);
+        n2 = n2.divide(g2);
+        d1 = d1.divide(g2);
+        d2 = d2.divide(g1);
+
+        return new Rational(n1.multiply(n2), d1.multiply(d2));
     }
 
     /**
